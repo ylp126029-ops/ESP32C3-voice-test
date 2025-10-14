@@ -17,9 +17,22 @@ typedef enum {
 // 用于状态机和阈值判断的宏定义
 #define TURN_START_THRESHOLD    30.0f // 进入“转向”状态的角度阈值
 #define TURN_STOP_THRESHOLD     15.0f // 从“转向”返回“直行”状态的角度阈值
-#define ACCELERATE_THRESHOLD_G  1.2f  // 判定为“加速”的Z轴加速度阈值 (单位: g)
+#define ACCELERATE_THRESHOLD_G  -0.1f  // 判定为“加速”的y轴加速度阈值 (单位: g)
 #define DECELERATE_THRESHOLD_G  0.8f  // 判定为“减速”的Z轴加速度阈值 (单位: g)
 #define TURN_HARD_GYRO_THRESHOLD  100.0f // 判定为“大力转向”的角速度阈值 (dps)
+
+//左转阈值
+#define TURN_LEFT_THRESHOLD  15.0f // 判定为“左转”的角度阈值
+//右转阈值
+#define TURN_RIGHT_THRESHOLD  -15.0f // 判定为“右转”的角度阈值
+//大力左转阈值
+#define TURN_LEFT_HARD_THRESHOLD  25.0f
+//大力右转阈值
+#define TURN_RIGHT_HARD_THRESHOLD  -25.0f
+//从“右转向”返回“直行”状态的角度阈值
+#define TURN_RIGHT_STOP_THRESHOLD  -6.0f
+//从“左转”返回“直行”状态的角度阈值
+#define TURN_LEFT_STOP_THRESHOLD  6.0f
 
 // 保存当前动作状态的静态变量
 static action_state_t s_current_action_state = ACTION_STATE_STRAIGHT;
@@ -36,43 +49,51 @@ static void imu_data_cb(imu_data_t data)
 {
     action_state_t last_state = s_current_action_state;
 
+    // //打印data.angle.roll
+    // ESP_LOGI(TAG, "roll: %f", data.angle.roll);
+    // //打印data.angle.pitch
+    // ESP_LOGI(TAG, "pitch: %f", data.angle.pitch);
+    // //打印data.angle.yaw
+    // ESP_LOGI(TAG, "yaw: %f", data.angle.yaw);
     // 状态机逻辑
     switch (s_current_action_state) {
         case ACTION_STATE_STRAIGHT:
-            if (data.angle.roll > TURN_START_THRESHOLD) {
+            if (data.angle.yaw < TURN_RIGHT_THRESHOLD) {
                 s_current_action_state = ACTION_STATE_TURN_RIGHT;
-            } else if (data.angle.roll < -TURN_START_THRESHOLD) {
+            } else if (data.angle.yaw > TURN_LEFT_THRESHOLD) {
                 s_current_action_state = ACTION_STATE_TURN_LEFT;
             }
             break;
 
         case ACTION_STATE_TURN_LEFT:
-            if (data.angle.roll > -TURN_STOP_THRESHOLD) {
+            if (data.angle.yaw < TURN_LEFT_STOP_THRESHOLD) {
                 s_current_action_state = ACTION_STATE_STRAIGHT;
             }
             break;
 
         case ACTION_STATE_TURN_RIGHT:
-            if (data.angle.roll < TURN_STOP_THRESHOLD) {
+            if (data.angle.yaw < TURN_RIGHT_STOP_THRESHOLD) {
                 s_current_action_state = ACTION_STATE_STRAIGHT;
             }
             break;
     }
 
+    //打印data.gyro.gyro_y
+    // ESP_LOGI(TAG, "gyro_y: %f", data.gyro.gyro_y);
     // --- 事件发送逻辑 (简化版) ---
     if (last_state != s_current_action_state) {
         // 当状态刚从“直行”切换到“转向”时
         if (last_state == ACTION_STATE_STRAIGHT) {
             if (s_current_action_state == ACTION_STATE_TURN_LEFT) {
                 // 检查进入左转时的角速度
-                if (fabsf(data.gyro.gyro_y) > TURN_HARD_GYRO_THRESHOLD) {
+                if (fabsf(data.angle.yaw) > TURN_LEFT_HARD_THRESHOLD) {
                     app_logic_post_event(APP_EVENT_MOTION_TURN_LEFT_HARD);
                 } else {
                     app_logic_post_event(APP_EVENT_MOTION_TURN_LEFT_NORMAL);
                 }
             } else if (s_current_action_state == ACTION_STATE_TURN_RIGHT) {
                 // 检查进入右转时的角速度
-                if (fabsf(data.gyro.gyro_y) > TURN_HARD_GYRO_THRESHOLD) {
+                if (fabsf(data.angle.yaw) < TURN_RIGHT_HARD_THRESHOLD) {
                     app_logic_post_event(APP_EVENT_MOTION_TURN_RIGHT_HARD);
                 } else {
                     app_logic_post_event(APP_EVENT_MOTION_TURN_RIGHT_NORMAL);
@@ -85,10 +106,12 @@ static void imu_data_cb(imu_data_t data)
         }
     }
 
+    // 打印data.acce_z
+    // ESP_LOGI(TAG, "acce_z: %f", data.acce_z);
     // 加速检测是独立的，不影响转向状态
-    if (data.acce_z > ACCELERATE_THRESHOLD_G) {
+    if (data.acce_y < ACCELERATE_THRESHOLD_G) {
         app_logic_post_event(APP_EVENT_MOTION_ACCELERATE);
-    } else if (data.acce_z < DECELERATE_THRESHOLD_G) {
+    } else if (data.acce_y > DECELERATE_THRESHOLD_G) {
         app_logic_post_event(APP_EVENT_MOTION_DECELERATE);
     }
 }

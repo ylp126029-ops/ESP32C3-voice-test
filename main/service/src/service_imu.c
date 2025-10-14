@@ -10,7 +10,7 @@ static const char *TAG = "service_imu"; // 日志标签
 // 滤波器和任务相关宏定义
 #define ALPHA           0.99f        // 互补滤波器系数，陀螺仪权重
 #define RAD_TO_DEG      57.27272727f // 弧度转角度系数
-#define TASK_DELAY_MS   20           // IMU数据读取任务的周期（毫秒）
+#define TASK_DELAY_MS   500           // IMU数据读取任务的周期（毫秒）
 
 // 静态全局变量
 static imu_data_callback_t s_data_cb = NULL; // 指向IMU数据回调函数的指针
@@ -26,7 +26,7 @@ static imu_data_t s_imu_data = {0};          // 存储IMU数据（姿态角和�
 static void complimentary_filter(const imu_acce_value_t *acce, const imu_gyro_value_t *gyro, float dt)
 {
     float acce_angle[2];
-    float gyro_angle[2];
+    float gyro_angle[3];
 
     // 从加速度计计算角度
     acce_angle[0] = atan2(acce->acce_y, acce->acce_z) * RAD_TO_DEG;
@@ -35,10 +35,12 @@ static void complimentary_filter(const imu_acce_value_t *acce, const imu_gyro_va
     // 从陀螺仪计算角度变化量
     gyro_angle[0] = gyro->gyro_x * dt;
     gyro_angle[1] = gyro->gyro_y * dt;
+    gyro_angle[2] = gyro->gyro_z * dt;
 
     // 互补滤波融合
     s_imu_data.angle.roll = (ALPHA * (s_imu_data.angle.roll + gyro_angle[0])) + ((1 - ALPHA) * acce_angle[0]);
     s_imu_data.angle.pitch = (ALPHA * (s_imu_data.angle.pitch + gyro_angle[1])) + ((1 - ALPHA) * acce_angle[1]);
+    s_imu_data.angle.yaw = gyro_angle[2];
 }
 
 /**
@@ -73,11 +75,20 @@ static void service_imu_task(void *pvParameters)
         gyro.gyro_y = raw_gyro.raw_gyro_y / gyro_sensitivity;
         gyro.gyro_z = raw_gyro.raw_gyro_z / gyro_sensitivity;
 
+        //打印acce_x, acce_y, acce_z
+        ESP_LOGI(TAG, "acce_x: %f, acce_y: %f, acce_z: %f", acce.acce_x, acce.acce_y, acce.acce_z);
+        //打印gyro_x, gyro_y, gyro_z
+        ESP_LOGI(TAG, "gyro_x: %f, gyro_y: %f, gyro_z: %f", gyro.gyro_x, gyro.gyro_y, gyro.gyro_z*TASK_DELAY_MS/1000.0f);
+        
         // 使用互补滤波器计算姿态角
-        complimentary_filter(&acce, &gyro, (float)TASK_DELAY_MS / 1000.0f);
+        complimentary_filter(&acce, &gyro, (float)TASK_DELAY_MS/1000.0f);
 
         // 填充需要上报的Z轴加速度数据
         s_imu_data.acce_z = acce.acce_z;
+        // 填充需要上报的X轴加速度数据
+        s_imu_data.acce_x = acce.acce_x;
+        // 填充需要上报的Y轴加速度数据
+        s_imu_data.acce_y = acce.acce_y;
 
         // 新增：填充需要上报的陀螺仪数据
         s_imu_data.gyro = gyro;

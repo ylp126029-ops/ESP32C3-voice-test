@@ -6,8 +6,8 @@ static const char *TAG = "bsp_mpu6050"; // 日志标签
 
 // MPU6050 I2C 配置
 #define MPU6050_I2C_PORT      I2C_NUM_0  // I2C端口号
-#define MPU6050_I2C_SDA       8         // SDA引脚
-#define MPU6050_I2C_SCL       9         // SCL引脚
+#define MPU6050_I2C_SDA       38         // SDA引脚
+#define MPU6050_I2C_SCL       39         // SCL引脚
 #define MPU6050_I2C_CLK_SPEED 100000     // I2C时钟频率
 #define MPU6050_I2C_ADDR      0x68       // MPU6050 I2C设备地址
 

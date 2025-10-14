@@ -27,6 +27,7 @@ typedef struct {
 typedef struct {
     float roll;  /*!< 横滚角 */
     float pitch; /*!< 俯仰角 */
+    float yaw;              /*!< 偏航角 */
 } imu_angle_t;
 
 /**
@@ -36,6 +37,8 @@ typedef struct {
     imu_angle_t angle;      /*!< 姿态角 */
     imu_gyro_value_t gyro;  /*!< 角速度 (新添加) */
     float acce_z;           /*!< Z轴加速度 (单位: g) */
+    float acce_x;           /*!< X轴加速度 (单位: g) */
+    float acce_y;           /*!< Y轴加速度 (单位: g) */
 } imu_data_t;
 
 /**
