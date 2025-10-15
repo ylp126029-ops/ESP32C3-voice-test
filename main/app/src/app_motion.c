@@ -18,7 +18,7 @@ typedef enum {
 #define TURN_START_THRESHOLD    30.0f // 进入“转向”状态的角度阈值
 #define TURN_STOP_THRESHOLD     15.0f // 从“转向”返回“直行”状态的角度阈值
 #define ACCELERATE_THRESHOLD_G  -0.1f  // 判定为“加速”的y轴加速度阈值 (单位: g)
-#define DECELERATE_THRESHOLD_G  0.8f  // 判定为“减速”的Z轴加速度阈值 (单位: g)
+#define DECELERATE_THRESHOLD_G  0.8f  // 判定为“减速”的y轴加速度阈值 (单位: g)
 #define TURN_HARD_GYRO_THRESHOLD  100.0f // 判定为“大力转向”的角速度阈值 (dps)
 
 //左转阈值
@@ -54,7 +54,7 @@ static void imu_data_cb(imu_data_t data)
     // //打印data.angle.pitch
     // ESP_LOGI(TAG, "pitch: %f", data.angle.pitch);
     // //打印data.angle.yaw
-    // ESP_LOGI(TAG, "yaw: %f", data.angle.yaw);
+    ESP_LOGI(TAG, "yaw: %f", data.angle.yaw);
     // 状态机逻辑
     switch (s_current_action_state) {
         case ACTION_STATE_STRAIGHT:
@@ -106,14 +106,20 @@ static void imu_data_cb(imu_data_t data)
         }
     }
 
-    // 打印data.acce_z
-    // ESP_LOGI(TAG, "acce_z: %f", data.acce_z);
-    // 加速检测是独立的，不影响转向状态
-    if (data.acce_y < ACCELERATE_THRESHOLD_G) {
-        app_logic_post_event(APP_EVENT_MOTION_ACCELERATE);
-    } else if (data.acce_y > DECELERATE_THRESHOLD_G) {
-        app_logic_post_event(APP_EVENT_MOTION_DECELERATE);
+    if(s_current_action_state==ACTION_STATE_STRAIGHT)
+    {
+        // 打印data.acce_z
+        // ESP_LOGI(TAG, "acce_z: %f", data.acce_z);
+        // 加速检测是独立的，不影响转向状态
+        if (data.acce_y < ACCELERATE_THRESHOLD_G) {
+            app_logic_post_event(APP_EVENT_MOTION_ACCELERATE);
+        } else if (data.acce_y > DECELERATE_THRESHOLD_G) {
+            app_logic_post_event(APP_EVENT_MOTION_DECELERATE);
+        } else {
+            app_logic_post_event(APP_EVENT_MOTION_ENDED);
+        }
     }
+
 }
 
 /**
