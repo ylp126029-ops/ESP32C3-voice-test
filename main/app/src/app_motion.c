@@ -45,6 +45,83 @@ static action_state_t s_current_action_state = ACTION_STATE_STRAIGHT;
  *
  * @param data 包含姿态角和Z轴加速度的IMU数据结构体
  */
+// static void imu_data_cb(imu_data_t data)
+// {
+//     action_state_t last_state = s_current_action_state;
+
+//     // //打印data.angle.roll
+//     // ESP_LOGI(TAG, "roll: %f", data.angle.roll);
+//     // //打印data.angle.pitch
+//     // ESP_LOGI(TAG, "pitch: %f", data.angle.pitch);
+//     // //打印data.angle.yaw
+//     ESP_LOGI(TAG, "yaw: %f", data.angle.yaw);
+//     // 状态机逻辑
+//     switch (s_current_action_state) {
+//         case ACTION_STATE_STRAIGHT:
+//             if (data.angle.yaw < TURN_RIGHT_THRESHOLD) {
+//                 s_current_action_state = ACTION_STATE_TURN_RIGHT;
+//             } else if (data.angle.yaw > TURN_LEFT_THRESHOLD) {
+//                 s_current_action_state = ACTION_STATE_TURN_LEFT;
+//             }
+//             break;
+
+//         case ACTION_STATE_TURN_LEFT:
+//             if (data.angle.yaw < TURN_LEFT_STOP_THRESHOLD) {
+//                 s_current_action_state = ACTION_STATE_STRAIGHT;
+//             }
+//             break;
+
+//         case ACTION_STATE_TURN_RIGHT:
+//             if (data.angle.yaw < TURN_RIGHT_STOP_THRESHOLD) {
+//                 s_current_action_state = ACTION_STATE_STRAIGHT;
+//             }
+//             break;
+//     }
+
+//     //打印data.gyro.gyro_y
+//     // ESP_LOGI(TAG, "gyro_y: %f", data.gyro.gyro_y);
+//     // --- 事件发送逻辑 (简化版) ---
+//     if (last_state != s_current_action_state) {
+//         // 当状态刚从“直行”切换到“转向”时
+//         if (last_state == ACTION_STATE_STRAIGHT) {
+//             if (s_current_action_state == ACTION_STATE_TURN_LEFT) {
+//                 // 检查进入左转时的角速度
+//                 if (fabsf(data.angle.yaw) > TURN_LEFT_HARD_THRESHOLD) {
+//                     app_logic_post_event(APP_EVENT_MOTION_TURN_LEFT_HARD);
+//                 } else {
+//                     app_logic_post_event(APP_EVENT_MOTION_TURN_LEFT_NORMAL);
+//                 }
+//             } else if (s_current_action_state == ACTION_STATE_TURN_RIGHT) {
+//                 // 检查进入右转时的角速度
+//                 if (fabsf(data.angle.yaw) < TURN_RIGHT_HARD_THRESHOLD) {
+//                     app_logic_post_event(APP_EVENT_MOTION_TURN_RIGHT_HARD);
+//                 } else {
+//                     app_logic_post_event(APP_EVENT_MOTION_TURN_RIGHT_NORMAL);
+//                 }
+//             }
+//         }
+//         // 当状态从“转向”切换回“直行”时
+//         else if (s_current_action_state == ACTION_STATE_STRAIGHT) {
+//             app_logic_post_event(APP_EVENT_MOTION_ENDED);
+//         }
+//     }
+
+//     if(s_current_action_state==ACTION_STATE_STRAIGHT)
+//     {
+//         // 打印data.acce_z
+//         // ESP_LOGI(TAG, "acce_z: %f", data.acce_z);
+//         // 加速检测是独立的，不影响转向状态
+//         if (data.acce_y < ACCELERATE_THRESHOLD_G) {
+//             app_logic_post_event(APP_EVENT_MOTION_ACCELERATE);
+//         } else if (data.acce_y > DECELERATE_THRESHOLD_G) {
+//             app_logic_post_event(APP_EVENT_MOTION_DECELERATE);
+//         } else {
+//             app_logic_post_event(APP_EVENT_MOTION_ENDED);
+//         }
+//     }
+
+// }
+
 static void imu_data_cb(imu_data_t data)
 {
     action_state_t last_state = s_current_action_state;
@@ -55,62 +132,39 @@ static void imu_data_cb(imu_data_t data)
     // ESP_LOGI(TAG, "pitch: %f", data.angle.pitch);
     // //打印data.angle.yaw
     ESP_LOGI(TAG, "yaw: %f", data.angle.yaw);
-    // 状态机逻辑
-    switch (s_current_action_state) {
-        case ACTION_STATE_STRAIGHT:
-            if (data.angle.yaw < TURN_RIGHT_THRESHOLD) {
+    // 汽车状态逻辑判断
+    if (data.angle.yaw < TURN_RIGHT_THRESHOLD) {
                 s_current_action_state = ACTION_STATE_TURN_RIGHT;
-            } else if (data.angle.yaw > TURN_LEFT_THRESHOLD) {
+    } else if (data.angle.yaw > TURN_LEFT_THRESHOLD) {
                 s_current_action_state = ACTION_STATE_TURN_LEFT;
-            }
-            break;
-
-        case ACTION_STATE_TURN_LEFT:
-            if (data.angle.yaw < TURN_LEFT_STOP_THRESHOLD) {
+    }
+    if ((data.angle.yaw < TURN_LEFT_STOP_THRESHOLD) && (data.angle.yaw > TURN_RIGHT_STOP_THRESHOLD)) {
                 s_current_action_state = ACTION_STATE_STRAIGHT;
-            }
-            break;
-
-        case ACTION_STATE_TURN_RIGHT:
-            if (data.angle.yaw < TURN_RIGHT_STOP_THRESHOLD) {
-                s_current_action_state = ACTION_STATE_STRAIGHT;
-            }
-            break;
     }
 
     //打印data.gyro.gyro_y
     // ESP_LOGI(TAG, "gyro_y: %f", data.gyro.gyro_y);
     // --- 事件发送逻辑 (简化版) ---
-    if (last_state != s_current_action_state) {
-        // 当状态刚从“直行”切换到“转向”时
-        if (last_state == ACTION_STATE_STRAIGHT) {
-            if (s_current_action_state == ACTION_STATE_TURN_LEFT) {
-                // 检查进入左转时的角速度
-                if (fabsf(data.angle.yaw) > TURN_LEFT_HARD_THRESHOLD) {
-                    app_logic_post_event(APP_EVENT_MOTION_TURN_LEFT_HARD);
-                } else {
-                    app_logic_post_event(APP_EVENT_MOTION_TURN_LEFT_NORMAL);
-                }
-            } else if (s_current_action_state == ACTION_STATE_TURN_RIGHT) {
-                // 检查进入右转时的角速度
-                if (fabsf(data.angle.yaw) < TURN_RIGHT_HARD_THRESHOLD) {
-                    app_logic_post_event(APP_EVENT_MOTION_TURN_RIGHT_HARD);
-                } else {
-                    app_logic_post_event(APP_EVENT_MOTION_TURN_RIGHT_NORMAL);
-                }
-            }
+    if (s_current_action_state == ACTION_STATE_TURN_LEFT) {
+        // 检查进入左转时的角速度
+        if (fabsf(data.angle.yaw) > TURN_LEFT_HARD_THRESHOLD) {
+            app_logic_post_event(APP_EVENT_MOTION_TURN_LEFT_HARD);
+        } else {
+            app_logic_post_event(APP_EVENT_MOTION_TURN_LEFT_NORMAL);
         }
-        // 当状态从“转向”切换回“直行”时
-        else if (s_current_action_state == ACTION_STATE_STRAIGHT) {
-            app_logic_post_event(APP_EVENT_MOTION_ENDED);
+    }  
+    if (s_current_action_state == ACTION_STATE_TURN_RIGHT) {
+        // 检查进入右转时的角速度
+        if (fabsf(data.angle.yaw) < TURN_RIGHT_HARD_THRESHOLD) {
+            app_logic_post_event(APP_EVENT_MOTION_TURN_RIGHT_HARD);
+        } else {
+            app_logic_post_event(APP_EVENT_MOTION_TURN_RIGHT_NORMAL);
         }
     }
-
     if(s_current_action_state==ACTION_STATE_STRAIGHT)
     {
         // 打印data.acce_z
         // ESP_LOGI(TAG, "acce_z: %f", data.acce_z);
-        // 加速检测是独立的，不影响转向状态
         if (data.acce_y < ACCELERATE_THRESHOLD_G) {
             app_logic_post_event(APP_EVENT_MOTION_ACCELERATE);
         } else if (data.acce_y > DECELERATE_THRESHOLD_G) {
@@ -121,7 +175,6 @@ static void imu_data_cb(imu_data_t data)
     }
 
 }
-
 /**
  * @brief 初始化动作识别应用
  * @details

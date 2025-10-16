@@ -5,6 +5,9 @@
 #include "freertos/FreeRTOS.h"
 #include "app_statemachine.h"
 
+// 状态机信号量，用于同步状态机和主逻辑任务
+extern SemaphoreHandle_t app_statemachine_semaphore;
+
 /**
  * @brief 初始化应用逻辑核心
  * @details

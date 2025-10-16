@@ -6,11 +6,15 @@
 #include "freertos/task.h"
 #include "freertos/queue.h"
 #include "esp_log.h"
+//引用二值信号量头文件
+#include "freertos/semphr.h"
 
 static const char *TAG = "app_logic";
 
 // 用于接收事件的FreeRTOS队列
 static QueueHandle_t app_event_queue;
+// 状态机信号量，用于同步状态机和主逻辑任务
+SemaphoreHandle_t app_statemachine_semaphore;
 
 // 主逻辑任务
 static void app_logic_task(void *pvParameters)
@@ -22,11 +26,15 @@ static void app_logic_task(void *pvParameters)
 
     while (1) {
         app_event_t event;
-        // 等待事件队列中的新事件
-        if (xQueueReceive(app_event_queue, &event, portMAX_DELAY) == pdPASS) {
-            ESP_LOGI(TAG, "接收到事件: %d", event);
-            // 将事件交由状态机处理
-            app_statemachine_handle_event(event);
+        if(xSemaphoreTake(app_statemachine_semaphore, portMAX_DELAY) == pdPASS) {
+            // 等待事件队列中的新事件
+            if (xQueueReceive(app_event_queue, &event, portMAX_DELAY) == pdPASS) {
+                ESP_LOGI(TAG, "接收到事件: %d", event);
+                // 将事件交由状态机处理
+                app_statemachine_handle_event(event);
+                //释放二值信号量，通知IMU任务运行
+                xSemaphoreGive(app_statemachine_semaphore);
+            }
         }
     }
 }
@@ -37,11 +45,19 @@ esp_err_t app_logic_init(void)
     ESP_LOGI(TAG, "应用逻辑核心初始化");
 
     // 创建事件队列，用于任务间通信
-    app_event_queue = xQueueCreate(10, sizeof(app_event_t));
+    app_event_queue = xQueueCreate(1, sizeof(app_event_t));
     if (app_event_queue == NULL) {
         ESP_LOGE(TAG, "事件队列创建失败");
         return ESP_FAIL;
     }
+    //创建二值信号量，用于同步状态机和主逻辑任务
+    app_statemachine_semaphore = xSemaphoreCreateBinary();
+    if (app_statemachine_semaphore == NULL) {
+        ESP_LOGE(TAG, "二值信号量创建失败");
+        return ESP_FAIL;
+    }
+    //释放信号量，允许状态机初始化
+    xSemaphoreGive(app_statemachine_semaphore);
 
     // 初始化UI模块
     app_ui_init();
@@ -49,7 +65,7 @@ esp_err_t app_logic_init(void)
     app_motion_init();
 
     // 创建并启动主逻辑任务
-    xTaskCreate(app_logic_task, "app_logic_task", 4096, NULL, 5, NULL);
+    xTaskCreate(app_logic_task, "app_logic_task", 4096, NULL, 4, NULL);
 
     return ESP_OK;
 }

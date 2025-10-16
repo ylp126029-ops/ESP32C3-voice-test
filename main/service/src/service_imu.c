@@ -1,9 +1,11 @@
 #include "service_imu.h"
+#include "app_logic.h"
 #include "bsp_mpu6050.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "esp_log.h"
 #include <math.h>
+#include "freertos/semphr.h"
 
 static const char *TAG = "service_imu"; // 日志标签
 
@@ -62,45 +64,46 @@ static void service_imu_task(void *pvParameters)
     bsp_mpu6050_get_gyro_sensitivity(&gyro_sensitivity);
 
     while (1) {
-        // 从BSP层获取原始数据
-        bsp_mpu6050_get_raw_acce(&raw_acce);
-        bsp_mpu6050_get_raw_gyro(&raw_gyro);
 
-        // 将原始数据转换为标准单位 (g 和 度/秒)
-        acce.acce_x = raw_acce.raw_acce_x / acce_sensitivity;
-        acce.acce_y = raw_acce.raw_acce_y / acce_sensitivity;
-        acce.acce_z = raw_acce.raw_acce_z / acce_sensitivity;
+            // 从BSP层获取原始数据
+            bsp_mpu6050_get_raw_acce(&raw_acce);
+            bsp_mpu6050_get_raw_gyro(&raw_gyro);
 
-        gyro.gyro_x = raw_gyro.raw_gyro_x / gyro_sensitivity;
-        gyro.gyro_y = raw_gyro.raw_gyro_y / gyro_sensitivity;
-        gyro.gyro_z = raw_gyro.raw_gyro_z / gyro_sensitivity;
+            // 将原始数据转换为标准单位 (g 和 度/秒)
+            acce.acce_x = raw_acce.raw_acce_x / acce_sensitivity;
+            acce.acce_y = raw_acce.raw_acce_y / acce_sensitivity;
+            acce.acce_z = raw_acce.raw_acce_z / acce_sensitivity;
 
-        //打印acce_x, acce_y, acce_z
-        // ESP_LOGI(TAG, "acce_x: %f, acce_y: %f, acce_z: %f", acce.acce_x, acce.acce_y, acce.acce_z);
-        // //打印gyro_x, gyro_y, gyro_z
-        // ESP_LOGI(TAG, "gyro_x: %f, gyro_y: %f, gyro_z: %f", gyro.gyro_x, gyro.gyro_y, gyro.gyro_z*TASK_DELAY_MS/1000.0f);
-        
-        // 使用互补滤波器计算姿态角
-        complimentary_filter(&acce, &gyro, (float)TASK_DELAY_MS/1000.0f);
+            gyro.gyro_x = raw_gyro.raw_gyro_x / gyro_sensitivity;
+            gyro.gyro_y = raw_gyro.raw_gyro_y / gyro_sensitivity;
+            gyro.gyro_z = raw_gyro.raw_gyro_z / gyro_sensitivity;
 
-        // 填充需要上报的Z轴加速度数据
-        s_imu_data.acce_z = acce.acce_z;
-        // 填充需要上报的X轴加速度数据
-        s_imu_data.acce_x = acce.acce_x;
-        // 填充需要上报的Y轴加速度数据
-        s_imu_data.acce_y = acce.acce_y;
+            //打印acce_x, acce_y, acce_z
+            // ESP_LOGI(TAG, "acce_x: %f, acce_y: %f, acce_z: %f", acce.acce_x, acce.acce_y, acce.acce_z);
+            // //打印gyro_x, gyro_y, gyro_z
+            // ESP_LOGI(TAG, "gyro_x: %f, gyro_y: %f, gyro_z: %f", gyro.gyro_x, gyro.gyro_y, gyro.gyro_z*TASK_DELAY_MS/1000.0f);
+            
+            // 使用互补滤波器计算姿态角
+            complimentary_filter(&acce, &gyro, (float)TASK_DELAY_MS/1000.0f);
 
-        // 新增：填充需要上报的陀螺仪数据
-        s_imu_data.gyro = gyro;
+            // 填充需要上报的Z轴加速度数据
+            s_imu_data.acce_z = acce.acce_z;
+            // 填充需要上报的X轴加速度数据
+            s_imu_data.acce_x = acce.acce_x;
+            // 填充需要上报的Y轴加速度数据
+            s_imu_data.acce_y = acce.acce_y;
 
-        // 如果注册了回调函数，则调用它来上报完整数据
-        if (s_data_cb) {
-            s_data_cb(s_imu_data);
+            // 新增：填充需要上报的陀螺仪数据
+            s_imu_data.gyro = gyro;
+
+            // 如果注册了回调函数，则调用它来上报完整数据
+            if (s_data_cb) {
+                s_data_cb(s_imu_data);
+            }
+
+            // 精确延时，保持任务周期稳定
+            vTaskDelayUntil(&last_wake_time, pdMS_TO_TICKS(TASK_DELAY_MS));
         }
-
-        // 精确延时，保持任务周期稳定
-        vTaskDelayUntil(&last_wake_time, pdMS_TO_TICKS(TASK_DELAY_MS));
-    }
 }
 
 /**

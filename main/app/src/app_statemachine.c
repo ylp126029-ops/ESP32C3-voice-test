@@ -103,51 +103,98 @@ void app_statemachine_init(app_state_t initial_state) {
     on_enter_state(current_state);
 }
 
+// void app_statemachine_handle_event(app_event_t event) {
+//     app_state_t next_state = current_state;
+
+//     switch (current_state) {
+//         case APP_STATE_UNIFORM_SPEED:
+//             // 在匀速状态下，根据不同的动作事件切换到对应状态
+//             if (event == APP_EVENT_MOTION_TURN_LEFT_NORMAL) {
+//                 next_state = APP_STATE_TURN_LEFT;
+//             } else if (event == APP_EVENT_MOTION_TURN_LEFT_HARD) {
+//                next_state = APP_STATE_TURN_LEFT_HARD;
+//             } else if (event == APP_EVENT_MOTION_TURN_RIGHT_NORMAL) {
+//                 next_state = APP_STATE_TURN_RIGHT;
+//             } else if (event == APP_EVENT_MOTION_TURN_RIGHT_HARD) {
+//                next_state = APP_STATE_TURN_RIGHT_HARD;
+//             } else if (event == APP_EVENT_MOTION_ACCELERATE) {
+//                 next_state = APP_STATE_ACCELERATE;
+//             } else if (event == APP_EVENT_MOTION_DECELERATE) {
+//                 next_state = APP_STATE_DECELERATE;
+//             } else if (event == APP_EVENT_TIMER_UNIFORM_UI) {
+//                 // 定时器事件触发，仅切换UI，不改变状态
+//                 app_ui_show_uniform_speed(rand() % 10);
+//             }
+//             break;
+
+//         case APP_STATE_TURN_LEFT:
+//         case APP_STATE_TURN_LEFT_HARD:
+//         case APP_STATE_TURN_RIGHT:
+//         case APP_STATE_TURN_RIGHT_HARD:
+//         case APP_STATE_ACCELERATE:
+//         case APP_STATE_DECELERATE:
+//             // 在任何一个动作状态下，接收到“动作结束”事件都会返回到匀速状态
+//             if (event == APP_EVENT_MOTION_ENDED) {
+//                 next_state = APP_STATE_UNIFORM_SPEED;
+//             }
+//             break;
+
+//         default:
+//             // 未知状态，不处理事件
+//             break;
+//     }
+
+//     // 如果状态发生了迁移
+//     if (next_state != current_state) {
+//         on_exit_state(current_state);  // 执行当前状态的退出动作
+//         current_state = next_state;    // 更新状态
+//         on_enter_state(current_state); // 执行新状态的进入动作
+//     }
+// }
+
 void app_statemachine_handle_event(app_event_t event) {
-    app_state_t next_state = current_state;
 
-    switch (current_state) {
-        case APP_STATE_UNIFORM_SPEED:
-            // 在匀速状态下，根据不同的动作事件切换到对应状态
-            if (event == APP_EVENT_MOTION_TURN_LEFT_NORMAL) {
-                next_state = APP_STATE_TURN_LEFT;
-            } else if (event == APP_EVENT_MOTION_TURN_LEFT_HARD) {
-               next_state = APP_STATE_TURN_LEFT_HARD;
-            } else if (event == APP_EVENT_MOTION_TURN_RIGHT_NORMAL) {
-                next_state = APP_STATE_TURN_RIGHT;
-            } else if (event == APP_EVENT_MOTION_TURN_RIGHT_HARD) {
-               next_state = APP_STATE_TURN_RIGHT_HARD;
-            } else if (event == APP_EVENT_MOTION_ACCELERATE) {
-                next_state = APP_STATE_ACCELERATE;
-            } else if (event == APP_EVENT_MOTION_DECELERATE) {
-                next_state = APP_STATE_DECELERATE;
-            } else if (event == APP_EVENT_TIMER_UNIFORM_UI) {
-                // 定时器事件触发，仅切换UI，不改变状态
-                app_ui_show_uniform_speed(rand() % 10);
-            }
+    app_event_t current_event = event;
+    switch (current_event) {
+        case APP_EVENT_MOTION_TURN_LEFT_NORMAL:
+            // 进入左转状态，显示左转开始UI
+            app_ui_show_turn_left_start();
+            vTaskDelay(pdMS_TO_TICKS(3000));
             break;
-
-        case APP_STATE_TURN_LEFT:
-        case APP_STATE_TURN_LEFT_HARD:
-        case APP_STATE_TURN_RIGHT:
-        case APP_STATE_TURN_RIGHT_HARD:
-        case APP_STATE_ACCELERATE:
-        case APP_STATE_DECELERATE:
-            // 在任何一个动作状态下，接收到“动作结束”事件都会返回到匀速状态
-            if (event == APP_EVENT_MOTION_ENDED) {
-                next_state = APP_STATE_UNIFORM_SPEED;
-            }
+        case APP_EVENT_MOTION_TURN_LEFT_HARD:
+        //    app_ui_show_turn_left_hard();
+            app_ui_show_turn_left_start();
+            vTaskDelay(pdMS_TO_TICKS(3000));
             break;
-
+        case APP_EVENT_MOTION_TURN_RIGHT_NORMAL:
+            // 进入右转状态，显示右转开始UI
+            app_ui_show_turn_right_start();
+            vTaskDelay(pdMS_TO_TICKS(3000));
+            break;
+        case APP_EVENT_MOTION_TURN_RIGHT_HARD:
+        //    app_ui_show_turn_right_hard();
+            app_ui_show_turn_right_start();
+            vTaskDelay(pdMS_TO_TICKS(3000));
+            break;
+        case APP_EVENT_MOTION_ACCELERATE:
+            // 进入加速状态，显示加速开始UI
+            app_ui_show_accelerate_start();
+            vTaskDelay(pdMS_TO_TICKS(1000));
+            break;
+        case APP_EVENT_MOTION_DECELERATE:
+            // 进入减速状态，显示减速开始UI
+            app_ui_show_decelerate_start();
+            vTaskDelay(pdMS_TO_TICKS(1000));
+            break;
+        case APP_EVENT_MOTION_ENDED:
+            // 进入减速状态，显示减速开始UI
+            app_ui_show_decelerate_end();
+            vTaskDelay(pdMS_TO_TICKS(1000));
+            break;
         default:
-            // 未知状态，不处理事件
+            // 未知状态，不执行任何操作
             break;
     }
 
-    // 如果状态发生了迁移
-    if (next_state != current_state) {
-        on_exit_state(current_state);  // 执行当前状态的退出动作
-        current_state = next_state;    // 更新状态
-        on_enter_state(current_state); // 执行新状态的进入动作
-    }
+
 }
