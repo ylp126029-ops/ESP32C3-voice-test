@@ -156,28 +156,28 @@ void app_statemachine_handle_event(app_event_t event) {
 
     app_event_t current_event = event;
     switch (current_event) {
-        case APP_EVENT_MOTION_TURN_LEFT_NORMAL:
+        case APP_EVENT_MOTION_TURN_LEFT_NORMAL://左
             // 进入左转状态，显示左转开始UI
             app_ui_show_turn_left_start();
             vTaskDelay(pdMS_TO_TICKS(1000*5));
             app_ui_show_decelerate_start();
             vTaskDelay(pdMS_TO_TICKS(1000*10));
             break;
-        case APP_EVENT_MOTION_TURN_LEFT_HARD:
+        case APP_EVENT_MOTION_TURN_LEFT_HARD://左
         //    app_ui_show_turn_left_hard();
             app_ui_show_turn_left_start();
             vTaskDelay(pdMS_TO_TICKS(1000*5));
             app_ui_show_decelerate_start();
             vTaskDelay(pdMS_TO_TICKS(1000*10));
             break;
-        case APP_EVENT_MOTION_TURN_RIGHT_NORMAL:
+        case APP_EVENT_MOTION_TURN_RIGHT_NORMAL://右
             // 进入右转状态，显示右转开始UI
             app_ui_show_turn_right_start();
             vTaskDelay(pdMS_TO_TICKS(1000*5));
             app_ui_show_decelerate_start();
             vTaskDelay(pdMS_TO_TICKS(1000*10));
             break;
-        case APP_EVENT_MOTION_TURN_RIGHT_HARD:
+        case APP_EVENT_MOTION_TURN_RIGHT_HARD://右
         //    app_ui_show_turn_right_hard();
             app_ui_show_turn_right_start();
             vTaskDelay(pdMS_TO_TICKS(1000*5));
@@ -192,11 +192,6 @@ void app_statemachine_handle_event(app_event_t event) {
         case APP_EVENT_MOTION_DECELERATE://停止
             // 进入减速状态，显示减速开始UI
             app_ui_show_accelerate_start();
-            vTaskDelay(pdMS_TO_TICKS(1000));
-            break;
-        case APP_EVENT_MOTION_ENDED:
-            // 进入减速状态，显示减速开始UI
-            app_ui_show_decelerate_end();
             vTaskDelay(pdMS_TO_TICKS(1000));
             break;
         default:

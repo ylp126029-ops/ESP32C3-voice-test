@@ -30,7 +30,7 @@ static motion_state_t s_current_motion_state = MOTION_STATE_STILL;
 //左转阈值
 #define TURN_LEFT_THRESHOLD  8.0f // 判定为“左转”的角度阈值
 //右转阈值
-#define TURN_RIGHT_THRESHOLD  -8.0f // 判定为“右转”的角度阈值
+#define TURN_RIGHT_THRESHOLD  -7.5f // 判定为“右转”的角度阈值
 //大力左转阈值
 #define TURN_LEFT_HARD_THRESHOLD  25.0f
 //大力右转阈值
@@ -42,10 +42,14 @@ static motion_state_t s_current_motion_state = MOTION_STATE_STILL;
 //停止阈值
 #define STOP_THRESHOLD  -0.09f // 判定为“停止”的y轴加速度阈值
 
-//停止检测次数
+//动到停止检测次数
 static int stop_count = 0;
-//停止标志位
+//动到停止标志位
 static bool is_stopped = false;
+//静止检测次数
+static int still_count = 0;
+//静止标志位
+static bool is_still = false;
 
 // 保存当前动作状态的静态变量
 static action_state_t s_current_action_state = ACTION_STATE_STRAIGHT;
@@ -179,7 +183,7 @@ static void imu_data_cb(imu_data_t data)
         // 打印data.acce_z
         // ESP_LOGI(TAG, "acce_z: %f", data.acce_z);
         if (data.acce_y < ACCELERATE_THRESHOLD_G && s_current_motion_state == MOTION_STATE_STILL) {
-            app_logic_post_event(APP_EVENT_MOTION_ACCELERATE);
+            // app_logic_post_event(APP_EVENT_MOTION_ACCELERATE);
             s_current_motion_state = MOTION_STATE_MOVE;
             is_stopped = false;
         } 
@@ -187,7 +191,24 @@ static void imu_data_cb(imu_data_t data)
             // app_logic_post_event(APP_EVENT_MOTION_DECELERATE);
             // s_current_motion_state = MOTION_STATE_STILL;
             is_stopped = true;
-        } 
+            //延时消抖，避免快速切换状态
+            vTaskDelay(pdMS_TO_TICKS(1500));
+        }
+
+        // if(data.acce_y > STOP_THRESHOLD && data.acce_y < -STOP_THRESHOLD && is_still==false)
+        // {
+        //     still_count++;
+        //     if(still_count >= 50)
+        //     {
+        //         is_still = true;
+        //         still_count=0;
+        //         s_current_motion_state = MOTION_STATE_STILL;
+        //     }
+        // }else
+        // {
+        //     is_still = false;
+        //     still_count=0;
+        // }       
     }
 
     // 停止检测, 连续检测次数达到阈值时, 判定为停止
@@ -204,7 +225,7 @@ static void imu_data_cb(imu_data_t data)
     }
     else//若下次不符合条件时，重置停止检测次数
     {
-        if(stop_count!=0)
+        if(stop_count!=0)//避免第一次判断重置
         {
             is_stopped = false;
         }
@@ -212,6 +233,7 @@ static void imu_data_cb(imu_data_t data)
     }
 
 
+    // 状态机根据当前状态发送事件
     if(s_current_motion_state == MOTION_STATE_STILL)
     {
         app_logic_post_event(APP_EVENT_MOTION_DECELERATE);
@@ -221,7 +243,6 @@ static void imu_data_cb(imu_data_t data)
         app_logic_post_event(APP_EVENT_MOTION_ACCELERATE);
     }
     
-
 }
 /**
  * @brief 初始化动作识别应用
