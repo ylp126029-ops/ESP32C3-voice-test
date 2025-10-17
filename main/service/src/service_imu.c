@@ -78,8 +78,9 @@ static void service_imu_task(void *pvParameters)
             gyro.gyro_y = raw_gyro.raw_gyro_y / gyro_sensitivity;
             gyro.gyro_z = raw_gyro.raw_gyro_z / gyro_sensitivity;
 
-            //打印acce_x, acce_y, acce_z
-            // ESP_LOGI(TAG, "acce_x: %f, acce_y: %f, acce_z: %f", acce.acce_x, acce.acce_y, acce.acce_z);
+            //打印 acce_y
+            ESP_LOGI(TAG, "acce_y: %f", acce.acce_y);
+            ESP_LOGI(TAG, "acce_z: %f", acce.acce_z);
             // //打印gyro_x, gyro_y, gyro_z
             // ESP_LOGI(TAG, "gyro_x: %f, gyro_y: %f, gyro_z: %f", gyro.gyro_x, gyro.gyro_y, gyro.gyro_z*TASK_DELAY_MS/1000.0f);
             

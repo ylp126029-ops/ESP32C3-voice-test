@@ -22,7 +22,7 @@ static void app_logic_task(void *pvParameters)
     ESP_LOGI(TAG, "应用逻辑任务已启动");
 
     // 初始化状态机，设定初始状态为“匀速”
-    app_statemachine_init(APP_STATE_UNIFORM_SPEED);
+    // app_statemachine_init(APP_STATE_UNIFORM_SPEED);
 
     while (1) {
         app_event_t event;
@@ -50,13 +50,13 @@ esp_err_t app_logic_init(void)
         ESP_LOGE(TAG, "事件队列创建失败");
         return ESP_FAIL;
     }
-    //创建二值信号量，用于同步状态机和主逻辑任务
+    //创建二值信号量，用于同步IMU和主逻辑任务
     app_statemachine_semaphore = xSemaphoreCreateBinary();
     if (app_statemachine_semaphore == NULL) {
         ESP_LOGE(TAG, "二值信号量创建失败");
         return ESP_FAIL;
     }
-    //释放信号量，允许状态机初始化
+    //释放信号量，允许逻辑任务运行
     xSemaphoreGive(app_statemachine_semaphore);
 
     // 初始化UI模块

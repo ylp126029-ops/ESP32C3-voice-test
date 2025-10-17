@@ -159,31 +159,39 @@ void app_statemachine_handle_event(app_event_t event) {
         case APP_EVENT_MOTION_TURN_LEFT_NORMAL:
             // 进入左转状态，显示左转开始UI
             app_ui_show_turn_left_start();
-            vTaskDelay(pdMS_TO_TICKS(3000));
+            vTaskDelay(pdMS_TO_TICKS(1000*5));
+            app_ui_show_decelerate_start();
+            vTaskDelay(pdMS_TO_TICKS(1000*10));
             break;
         case APP_EVENT_MOTION_TURN_LEFT_HARD:
         //    app_ui_show_turn_left_hard();
             app_ui_show_turn_left_start();
-            vTaskDelay(pdMS_TO_TICKS(3000));
+            vTaskDelay(pdMS_TO_TICKS(1000*5));
+            app_ui_show_decelerate_start();
+            vTaskDelay(pdMS_TO_TICKS(1000*10));
             break;
         case APP_EVENT_MOTION_TURN_RIGHT_NORMAL:
             // 进入右转状态，显示右转开始UI
             app_ui_show_turn_right_start();
-            vTaskDelay(pdMS_TO_TICKS(3000));
+            vTaskDelay(pdMS_TO_TICKS(1000*5));
+            app_ui_show_decelerate_start();
+            vTaskDelay(pdMS_TO_TICKS(1000*10));
             break;
         case APP_EVENT_MOTION_TURN_RIGHT_HARD:
         //    app_ui_show_turn_right_hard();
             app_ui_show_turn_right_start();
-            vTaskDelay(pdMS_TO_TICKS(3000));
+            vTaskDelay(pdMS_TO_TICKS(1000*5));
+            app_ui_show_decelerate_start();
+            vTaskDelay(pdMS_TO_TICKS(1000*10));
             break;
-        case APP_EVENT_MOTION_ACCELERATE:
+        case APP_EVENT_MOTION_ACCELERATE://直行
             // 进入加速状态，显示加速开始UI
-            app_ui_show_accelerate_start();
+            app_ui_show_decelerate_end();
             vTaskDelay(pdMS_TO_TICKS(1000));
             break;
-        case APP_EVENT_MOTION_DECELERATE:
+        case APP_EVENT_MOTION_DECELERATE://停止
             // 进入减速状态，显示减速开始UI
-            app_ui_show_decelerate_start();
+            app_ui_show_accelerate_start();
             vTaskDelay(pdMS_TO_TICKS(1000));
             break;
         case APP_EVENT_MOTION_ENDED:
@@ -198,3 +206,36 @@ void app_statemachine_handle_event(app_event_t event) {
 
 
 }
+
+// // 显示左转ui
+// void Shou_Ui_Left(void)
+// {
+//     app_ui_show_turn_left_start();//播放左转入场ui
+//     vTaskDelay(pdMS_TO_TICKS(1000*10));// 等待10秒
+//     app_ui_show_turn_left_end();//播放左转出场ui
+//     vTaskDelay(pdMS_TO_TICKS(1000*20));//维持20秒
+// }
+// // 显示右转ui
+// void Shou_Ui_Right(void)
+// {
+//     app_ui_show_turn_right_start();//播放右转into ui
+//     vTaskDelay(pdMS_TO_TICKS(1000*10));// 等待10秒
+//     app_ui_show_turn_right_end();//播放右转out ui
+//     vTaskDelay(pdMS_TO_TICKS(1000*20));//维持20秒
+// }
+
+// //显示直行ui
+// void Shou_Ui_Straight(void)
+// {
+//     app_ui_show_straight_start();//播放直行into ui
+//     vTaskDelay(pdMS_TO_TICKS(1000*10));// 等待10秒
+// }
+
+// //显示停止ui
+// void Shou_Ui_Stop(void)
+// {
+//     app_ui_show_stop_start();//播放停止into ui
+//     vTaskDelay(pdMS_TO_TICKS(1000*10));// 等待10秒
+// }
+
+

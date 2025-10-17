@@ -9,30 +9,38 @@ static const char *TAG = "app_motion"; // 日志标签
 
 // 动作识别状态定义
 typedef enum {
-    ACTION_STATE_STRAIGHT, // 直行
+    ACTION_STATE_STRAIGHT, // 直
     ACTION_STATE_TURN_LEFT,  // 左转
     ACTION_STATE_TURN_RIGHT, // 右转
 } action_state_t;
 
+//定义枚举
+typedef enum {
+    MOTION_STATE_STILL, // 静止
+    MOTION_STATE_MOVE, // 动
+} motion_state_t;
+static motion_state_t s_current_motion_state = MOTION_STATE_STILL;
 // 用于状态机和阈值判断的宏定义
 #define TURN_START_THRESHOLD    30.0f // 进入“转向”状态的角度阈值
 #define TURN_STOP_THRESHOLD     15.0f // 从“转向”返回“直行”状态的角度阈值
-#define ACCELERATE_THRESHOLD_G  -0.1f  // 判定为“加速”的y轴加速度阈值 (单位: g)
-#define DECELERATE_THRESHOLD_G  0.8f  // 判定为“减速”的y轴加速度阈值 (单位: g)
+#define ACCELERATE_THRESHOLD_G  -0.12f  // 判定为“加速”的y轴加速度阈值 (单位: g)
+#define DECELERATE_THRESHOLD_G  0.12f  // 判定为“减速”的y轴加速度阈值 (单位: g)
 #define TURN_HARD_GYRO_THRESHOLD  100.0f // 判定为“大力转向”的角速度阈值 (dps)
 
 //左转阈值
-#define TURN_LEFT_THRESHOLD  15.0f // 判定为“左转”的角度阈值
+#define TURN_LEFT_THRESHOLD  8.0f // 判定为“左转”的角度阈值
 //右转阈值
-#define TURN_RIGHT_THRESHOLD  -15.0f // 判定为“右转”的角度阈值
+#define TURN_RIGHT_THRESHOLD  -8.0f // 判定为“右转”的角度阈值
 //大力左转阈值
 #define TURN_LEFT_HARD_THRESHOLD  25.0f
 //大力右转阈值
 #define TURN_RIGHT_HARD_THRESHOLD  -25.0f
 //从“右转向”返回“直行”状态的角度阈值
-#define TURN_RIGHT_STOP_THRESHOLD  -6.0f
+#define TURN_RIGHT_STOP_THRESHOLD  -3.0f
 //从“左转”返回“直行”状态的角度阈值
-#define TURN_LEFT_STOP_THRESHOLD  6.0f
+#define TURN_LEFT_STOP_THRESHOLD  3.0f
+//停止阈值
+#define STOP_THRESHOLD  -0.02f // 判定为“停止”的y轴加速度阈值
 
 // 保存当前动作状态的静态变量
 static action_state_t s_current_action_state = ACTION_STATE_STRAIGHT;
@@ -165,14 +173,27 @@ static void imu_data_cb(imu_data_t data)
     {
         // 打印data.acce_z
         // ESP_LOGI(TAG, "acce_z: %f", data.acce_z);
-        if (data.acce_y < ACCELERATE_THRESHOLD_G) {
+        if (data.acce_y < ACCELERATE_THRESHOLD_G && s_current_motion_state == MOTION_STATE_STILL) {
             app_logic_post_event(APP_EVENT_MOTION_ACCELERATE);
-        } else if (data.acce_y > DECELERATE_THRESHOLD_G) {
+            s_current_motion_state = MOTION_STATE_MOVE;
+        } else if (data.acce_y > DECELERATE_THRESHOLD_G && s_current_motion_state == MOTION_STATE_MOVE) {
             app_logic_post_event(APP_EVENT_MOTION_DECELERATE);
-        } else {
-            app_logic_post_event(APP_EVENT_MOTION_ENDED);
-        }
+            s_current_motion_state = MOTION_STATE_STILL;
+        } 
+        // else {
+        //     app_logic_post_event(APP_EVENT_MOTION_ACCELERATE);
+        // }
     }
+
+    if(s_current_motion_state == MOTION_STATE_STILL)
+    {
+        app_logic_post_event(APP_EVENT_MOTION_DECELERATE);
+    }
+    else if(s_current_motion_state == MOTION_STATE_MOVE)
+    {
+        app_logic_post_event(APP_EVENT_MOTION_ACCELERATE);
+    }
+    
 
 }
 /**
