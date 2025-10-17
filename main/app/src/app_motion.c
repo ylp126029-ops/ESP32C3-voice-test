@@ -40,7 +40,12 @@ static motion_state_t s_current_motion_state = MOTION_STATE_STILL;
 //从“左转”返回“直行”状态的角度阈值
 #define TURN_LEFT_STOP_THRESHOLD  3.0f
 //停止阈值
-#define STOP_THRESHOLD  -0.02f // 判定为“停止”的y轴加速度阈值
+#define STOP_THRESHOLD  -0.09f // 判定为“停止”的y轴加速度阈值
+
+//停止检测次数
+static int stop_count = 0;
+//停止标志位
+static bool is_stopped = false;
 
 // 保存当前动作状态的静态变量
 static action_state_t s_current_action_state = ACTION_STATE_STRAIGHT;
@@ -176,14 +181,36 @@ static void imu_data_cb(imu_data_t data)
         if (data.acce_y < ACCELERATE_THRESHOLD_G && s_current_motion_state == MOTION_STATE_STILL) {
             app_logic_post_event(APP_EVENT_MOTION_ACCELERATE);
             s_current_motion_state = MOTION_STATE_MOVE;
-        } else if (data.acce_y > DECELERATE_THRESHOLD_G && s_current_motion_state == MOTION_STATE_MOVE) {
-            app_logic_post_event(APP_EVENT_MOTION_DECELERATE);
-            s_current_motion_state = MOTION_STATE_STILL;
+            is_stopped = false;
         } 
-        // else {
-        //     app_logic_post_event(APP_EVENT_MOTION_ACCELERATE);
-        // }
+        else if (data.acce_y > DECELERATE_THRESHOLD_G  && s_current_motion_state == MOTION_STATE_MOVE ) {
+            // app_logic_post_event(APP_EVENT_MOTION_DECELERATE);
+            // s_current_motion_state = MOTION_STATE_STILL;
+            is_stopped = true;
+        } 
     }
+
+    // 停止检测, 连续检测次数达到阈值时, 判定为停止
+    if (data.acce_y > STOP_THRESHOLD && data.acce_y < -STOP_THRESHOLD && is_stopped==true) {
+            // app_logic_post_event(APP_EVENT_MOTION_DECELERATE);
+            // s_current_motion_state = MOTION_STATE_STILL;
+            stop_count++;
+            if(stop_count >= 10)
+            {
+                is_stopped = false;
+                stop_count=0;
+                s_current_motion_state = MOTION_STATE_STILL;
+            }
+    }
+    else//若下次不符合条件时，重置停止检测次数
+    {
+        if(stop_count!=0)
+        {
+            is_stopped = false;
+        }
+        stop_count=0;
+    }
+
 
     if(s_current_motion_state == MOTION_STATE_STILL)
     {
