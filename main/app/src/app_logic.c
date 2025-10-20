@@ -34,6 +34,10 @@ static void app_logic_task(void *pvParameters)
                 app_statemachine_handle_event(event);
                 //释放二值信号量，通知IMU任务运行
                 xSemaphoreGive(app_statemachine_semaphore);
+                //清除当前队列中的所有事件，确保下次获取到的是最新的事件
+                while (uxQueueMessagesWaiting(app_event_queue) > 0) {
+                    xQueueReceive(app_event_queue, &event, 0);
+                }
             }
         }
     }

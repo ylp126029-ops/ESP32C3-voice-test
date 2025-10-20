@@ -24,7 +24,7 @@ static motion_state_t s_current_motion_state = MOTION_STATE_STILL;
 #define TURN_START_THRESHOLD    30.0f // 进入“转向”状态的角度阈值
 #define TURN_STOP_THRESHOLD     15.0f // 从“转向”返回“直行”状态的角度阈值
 #define ACCELERATE_THRESHOLD_G  -0.12f  // 判定为“加速”的y轴加速度阈值 (单位: g)
-#define DECELERATE_THRESHOLD_G  0.12f  // 判定为“减速”的y轴加速度阈值 (单位: g)
+#define DECELERATE_THRESHOLD_G  0.1f  // 判定为“减速”的y轴加速度阈值 (单位: g)
 #define TURN_HARD_GYRO_THRESHOLD  100.0f // 判定为“大力转向”的角速度阈值 (dps)
 
 //左转阈值
@@ -40,8 +40,11 @@ static motion_state_t s_current_motion_state = MOTION_STATE_STILL;
 //从“左转”返回“直行”状态的角度阈值
 #define TURN_LEFT_STOP_THRESHOLD  3.0f
 //停止阈值
-#define STOP_THRESHOLD  -0.09f // 判定为“停止”的y轴加速度阈值
-
+#define STOP_THRESHOLD  -0.110f
+//向前移动的Y轴加速度阈值
+#define MOVE_THRESHOLD_G  STOP_THRESHOLD-0.02f // 判定为“向前移动”的y轴加速度阈值 (单位: g)
+//向后移动的Y轴加速度阈值
+#define MOVE_BACK_THRESHOLD_G  STOP_THRESHOLD+0.015f // 判定为“向后移动”的y轴加速度阈值 (单位: g)
 //动到停止检测次数
 static int stop_count = 0;
 //动到停止标志位
@@ -152,8 +155,10 @@ static void imu_data_cb(imu_data_t data)
     // 汽车状态逻辑判断
     if (data.angle.yaw < TURN_RIGHT_THRESHOLD) {
                 s_current_action_state = ACTION_STATE_TURN_RIGHT;
+                s_current_motion_state = MOTION_STATE_MOVE;
     } else if (data.angle.yaw > TURN_LEFT_THRESHOLD) {
                 s_current_action_state = ACTION_STATE_TURN_LEFT;
+                s_current_motion_state = MOTION_STATE_MOVE;
     }
     if ((data.angle.yaw < TURN_LEFT_STOP_THRESHOLD) && (data.angle.yaw > TURN_RIGHT_STOP_THRESHOLD)) {
                 s_current_action_state = ACTION_STATE_STRAIGHT;
@@ -182,39 +187,31 @@ static void imu_data_cb(imu_data_t data)
     {
         // 打印data.acce_z
         // ESP_LOGI(TAG, "acce_z: %f", data.acce_z);
-        if (data.acce_y < ACCELERATE_THRESHOLD_G && s_current_motion_state == MOTION_STATE_STILL) {
-            // app_logic_post_event(APP_EVENT_MOTION_ACCELERATE);
+        if (data.acce_y < MOVE_THRESHOLD_G) {
             s_current_motion_state = MOTION_STATE_MOVE;
-            is_stopped = false;
         } 
-        else if (data.acce_y > DECELERATE_THRESHOLD_G  && s_current_motion_state == MOTION_STATE_MOVE ) {
-            // app_logic_post_event(APP_EVENT_MOTION_DECELERATE);
-            // s_current_motion_state = MOTION_STATE_STILL;
+        else if (data.acce_y > MOVE_BACK_THRESHOLD_G && s_current_motion_state==MOTION_STATE_MOVE) {
+            s_current_motion_state = MOTION_STATE_MOVE;
             is_stopped = true;
-            //延时消抖，避免快速切换状态
-            vTaskDelay(pdMS_TO_TICKS(1500));
+            still_count=0;
+            stop_count=0;
         }
+        else if (data.acce_y > MOVE_THRESHOLD_G && data.acce_y < MOVE_BACK_THRESHOLD_G && s_current_motion_state==MOTION_STATE_MOVE) {
+            s_current_motion_state = MOTION_STATE_MOVE;
 
-        // if(data.acce_y > STOP_THRESHOLD && data.acce_y < -STOP_THRESHOLD && is_still==false)
-        // {
-        //     still_count++;
-        //     if(still_count >= 50)
-        //     {
-        //         is_still = true;
-        //         still_count=0;
-        //         s_current_motion_state = MOTION_STATE_STILL;
-        //     }
-        // }else
-        // {
-        //     is_still = false;
-        //     still_count=0;
-        // }       
+        }    
     }
 
-    // 停止检测, 连续检测次数达到阈值时, 判定为停止
-    if (data.acce_y > STOP_THRESHOLD && data.acce_y < -STOP_THRESHOLD && is_stopped==true) {
-            // app_logic_post_event(APP_EVENT_MOTION_DECELERATE);
-            // s_current_motion_state = MOTION_STATE_STILL;
+    if(is_stopped)
+    {
+        still_count++;
+        if(still_count >= 20)
+        {
+            is_stopped = false;
+            still_count=0;
+        }
+        // 停止检测, 检测次数达到阈值时, 判定为停止
+        if (data.acce_y > STOP_THRESHOLD-0.01f && data.acce_y < STOP_THRESHOLD+0.02f &&((data.angle.yaw < TURN_LEFT_STOP_THRESHOLD) && (data.angle.yaw > TURN_RIGHT_STOP_THRESHOLD))&&still_count>=6) {
             stop_count++;
             if(stop_count >= 10)
             {
@@ -222,16 +219,8 @@ static void imu_data_cb(imu_data_t data)
                 stop_count=0;
                 s_current_motion_state = MOTION_STATE_STILL;
             }
-    }
-    else//若下次不符合条件时，重置停止检测次数
-    {
-        if(stop_count!=0)//避免第一次判断重置
-        {
-            is_stopped = false;
         }
-        stop_count=0;
     }
-
 
     // 状态机根据当前状态发送事件
     if(s_current_motion_state == MOTION_STATE_STILL)
