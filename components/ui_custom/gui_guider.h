@@ -14,7 +14,7 @@ extern "C" {
 #endif
 
 #include "lvgl.h"
-
+#include "widgets_init.h"
 
 typedef struct
 {

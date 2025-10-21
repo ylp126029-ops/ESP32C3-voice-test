@@ -12,6 +12,7 @@ static TimerHandle_t uniform_speed_ui_timer;
 
 static void uniform_speed_timer_callback(TimerHandle_t xTimer) {
     app_logic_post_event(APP_EVENT_TIMER_UNIFORM_UI);
+
 }
 
 // 状态进入动作处理
@@ -186,7 +187,8 @@ void app_statemachine_handle_event(app_event_t event) {
             break;
         case APP_EVENT_MOTION_ACCELERATE://直行
             // 进入加速状态，显示加速开始UI
-            app_ui_show_decelerate_end();
+            // app_ui_show_decelerate_end();
+            app_ui_test();
             vTaskDelay(pdMS_TO_TICKS(1000));
             break;
         case APP_EVENT_MOTION_DECELERATE://停止
@@ -198,8 +200,6 @@ void app_statemachine_handle_event(app_event_t event) {
             // 未知状态，不执行任何操作
             break;
     }
-
-
 }
 
 // // 显示左转ui

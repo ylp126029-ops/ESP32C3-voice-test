@@ -168,3 +168,19 @@ void app_ui_show_turn_right_end(void)
     ESP_LOGI(TAG, "UI Update: Turn Right End -> E14");
     switch_to_screen(SCREEN_ID_E14);
 }
+
+void app_ui_test(void)
+{
+
+    app_ui_show_decelerate_end();
+    // lv_image_set_src(guider_ui.E_14_animimg_1, E_14_animimg_1_imgs[0]);
+    //延时3s
+    vTaskDelay(10000 / portTICK_PERIOD_MS);
+    // app_ui_show_decelerate_end();
+    lvgl_port_lock(0);
+    lv_animimg_set_src(guider_ui.E_14_animimg_1, (const void **) E_14_animimg_1_imgs, 30);
+    lv_animimg_set_duration(guider_ui.E_14_animimg_1, 60*30);
+    lv_animimg_set_repeat_count(guider_ui.E_14_animimg_1, 1);
+    lv_animimg_start(guider_ui.E_14_animimg_1);
+    lvgl_port_unlock();
+}

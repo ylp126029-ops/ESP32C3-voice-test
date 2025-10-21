@@ -46,4 +46,5 @@ void app_ui_show_accelerate_end(void);
 void app_ui_show_decelerate_start(void);
 void app_ui_show_decelerate_end(void);
 
+void app_ui_test(void);
 #endif /* APP_UI_H_ */
