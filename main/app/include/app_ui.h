@@ -49,8 +49,8 @@ void app_ui_show_decelerate_end(void);
 typedef enum {
     SCREEN_ID_NONE,
     SCREEN_ID_E2,
-    // SCREEN_ID_E5,
-    // SCREEN_ID_E7,
+    SCREEN_ID_E5,
+    SCREEN_ID_E7,
     SCREEN_ID_E8,
     SCREEN_ID_E10,
     SCREEN_ID_E13,

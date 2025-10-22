@@ -25,8 +25,8 @@ static bool* get_current_screen_del_flag(void)
 {
     switch (g_current_screen) {
         case SCREEN_ID_E2: return &guider_ui.E_2_del;
-        // case SCREEN_ID_E5: return &guider_ui.E_5_del;
-        // case SCREEN_ID_E7: return &guider_ui.E_7_del;
+        case SCREEN_ID_E5: return &guider_ui.E_5_del;
+        case SCREEN_ID_E7: return &guider_ui.E_7_del;
         case SCREEN_ID_E8: return &guider_ui.E_8_del;
         case SCREEN_ID_E10: return &guider_ui.E_10_del;
         case SCREEN_ID_E13: return &guider_ui.E_13_del;
@@ -60,8 +60,8 @@ static void switch_to_screen(screen_id_t screen_id)
 
         switch (screen_id) {
             case SCREEN_ID_E2: new_scr = &guider_ui.E_2; setup_scr = setup_scr_E_2; new_scr_del_val = guider_ui.E_2_del; scr_name = "E2"; break;
-            // case SCREEN_ID_E5: new_scr = &guider_ui.E_5; setup_scr = setup_scr_E_5; new_scr_del_val = guider_ui.E_5_del; scr_name = "E5"; break;
-            // case SCREEN_ID_E7: new_scr = &guider_ui.E_7; setup_scr = setup_scr_E_7; new_scr_del_val = guider_ui.E_7_del; scr_name = "E7"; break;
+            case SCREEN_ID_E5: new_scr = &guider_ui.E_5; setup_scr = setup_scr_E_5; new_scr_del_val = guider_ui.E_5_del; scr_name = "E5"; break;
+            case SCREEN_ID_E7: new_scr = &guider_ui.E_7; setup_scr = setup_scr_E_7; new_scr_del_val = guider_ui.E_7_del; scr_name = "E7"; break;
             case SCREEN_ID_E8: new_scr = &guider_ui.E_8; setup_scr = setup_scr_E_8; new_scr_del_val = guider_ui.E_8_del; scr_name = "E8"; break;
             case SCREEN_ID_E10: new_scr = &guider_ui.E_10; setup_scr = setup_scr_E_10; new_scr_del_val = guider_ui.E_10_del; scr_name = "E10"; break;
             case SCREEN_ID_E13: new_scr = &guider_ui.E_13; setup_scr = setup_scr_E_13; new_scr_del_val = guider_ui.E_13_del; scr_name = "E13"; break;
