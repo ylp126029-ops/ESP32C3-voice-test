@@ -21,8 +21,8 @@ static void app_logic_task(void *pvParameters)
 {
     ESP_LOGI(TAG, "应用逻辑任务已启动");
 
-    // 初始化状态机，设定初始状态为“匀速”
-    app_statemachine_init(APP_STATE_UNIFORM_SPEED);
+    
+    app_time_init();
 
     while (1) {
         app_event_t event;

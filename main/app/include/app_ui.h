@@ -45,6 +45,32 @@ void app_ui_show_accelerate_end(void);
 // --- 刹车状态 UI (TODO) ---
 void app_ui_show_decelerate_start(void);
 void app_ui_show_decelerate_end(void);
-
+// Enum to track the current screen
+typedef enum {
+    SCREEN_ID_NONE,
+    SCREEN_ID_E2,
+    // SCREEN_ID_E5,
+    // SCREEN_ID_E7,
+    SCREEN_ID_E8,
+    SCREEN_ID_E10,
+    SCREEN_ID_E13,
+    SCREEN_ID_E14,
+    SCREEN_ID_E15,
+    SCREEN_ID_E16,
+    SCREEN_ID_E17,
+} screen_id_t;
+//定义直行表情枚举
+typedef enum {
+    STRAIGHT_EXPRESS_0, // 直行表情0
+    STRAIGHT_EXPRESS_1, // 直行表情1
+    STRAIGHT_EXPRESS_2, // 直行表情2
+    STRAIGHT_EXPRESS_3, // 直行表情3
+    STRAIGHT_EXPRESS_4, // 直行表情4
+} straight_express_t;
+screen_id_t app_ui_get_current_screen(void);
 void app_ui_test(void);
+void app_ui_show_straight(void);//显示当前直行表情
+void app_ui_set_straight_express(straight_express_t express);//设置当前直行表情
+void app_ui_show_left(void);//显示左转表情
+void app_ui_show_right(void);//显示右转表情
 #endif /* APP_UI_H_ */

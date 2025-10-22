@@ -13,22 +13,12 @@
 
 static const char *TAG = "app_ui";
 
-// Enum to track the current screen
-typedef enum {
-    SCREEN_ID_NONE,
-    SCREEN_ID_E2,
-    // SCREEN_ID_E5,
-    // SCREEN_ID_E7,
-    SCREEN_ID_E8,
-    SCREEN_ID_E10,
-    SCREEN_ID_E13,
-    SCREEN_ID_E14,
-    SCREEN_ID_E15,
-    SCREEN_ID_E16,
-    SCREEN_ID_E17,
-} screen_id_t;
-
 static screen_id_t g_current_screen = SCREEN_ID_NONE; // Default screen set by setup_ui
+//返回当前屏幕id
+screen_id_t app_ui_get_current_screen(void)
+{
+    return g_current_screen;
+}
 
 // Helper to get the delete flag pointer for the current screen
 static bool* get_current_screen_del_flag(void)
@@ -171,16 +161,136 @@ void app_ui_show_turn_right_end(void)
 
 void app_ui_test(void)
 {
-
     app_ui_show_decelerate_end();
-    // lv_image_set_src(guider_ui.E_14_animimg_1, E_14_animimg_1_imgs[0]);
-    //延时3s
-    vTaskDelay(10000 / portTICK_PERIOD_MS);
-    // app_ui_show_decelerate_end();
-    lvgl_port_lock(0);
-    lv_animimg_set_src(guider_ui.E_14_animimg_1, (const void **) E_14_animimg_1_imgs, 30);
-    lv_animimg_set_duration(guider_ui.E_14_animimg_1, 60*30);
-    lv_animimg_set_repeat_count(guider_ui.E_14_animimg_1, 1);
-    lv_animimg_start(guider_ui.E_14_animimg_1);
-    lvgl_port_unlock();
+}
+
+static straight_express_t s_current_straight_express = STRAIGHT_EXPRESS_0;
+//设置当前直行表情
+void app_ui_set_straight_express(straight_express_t express)
+{
+    s_current_straight_express = express;
+}
+
+//显示直行表情
+void app_ui_show_straight(void)
+{
+    //获取当前直行表情
+    straight_express_t express = s_current_straight_express;
+    switch (express) { 
+    case STRAIGHT_EXPRESS_0:
+        switch_to_screen(SCREEN_ID_E14);
+        //显示直行表情0
+        break;
+    case STRAIGHT_EXPRESS_1:
+        switch_to_screen(SCREEN_ID_E15);
+        //显示直行表情1
+        break;
+    case STRAIGHT_EXPRESS_2:
+        switch_to_screen(SCREEN_ID_E16);
+        //显示直行表情2
+        break;
+    case STRAIGHT_EXPRESS_3:
+        switch_to_screen(SCREEN_ID_E10);
+        //显示直行表情3
+        break;
+    case STRAIGHT_EXPRESS_4:
+        switch_to_screen(SCREEN_ID_E8);
+        //显示直行表情4
+        break;
+    default:
+        switch_to_screen(SCREEN_ID_E14);
+        break;
+    }
+    //打印当前直行表情
+    ESP_LOGI(TAG, "UI Update: Straight Express -> %d", express);
+}
+
+//显示左转表情
+void app_ui_show_left(void)
+{
+    //生成随机数1-2
+    int express = rand() % 2 + 1;
+    switch (express) { 
+    case 1:
+        switch_to_screen(SCREEN_ID_E13);//显示左转专属表情
+        vTaskDelay(2*1000 / portTICK_PERIOD_MS);//延时2S
+        switch_to_screen(SCREEN_ID_E8);//显示左转结束表情
+        vTaskDelay(4*1000 / portTICK_PERIOD_MS);
+        //显示左转表情0
+        break;
+    case 2:
+        switch_to_screen(SCREEN_ID_E13);//显示左转专属表情
+        vTaskDelay(2*1000 / portTICK_PERIOD_MS);//延时2S
+        switch_to_screen(SCREEN_ID_E15);//显示左转结束表情
+        vTaskDelay(4*1000 / portTICK_PERIOD_MS);        
+        break;
+    default:
+        switch_to_screen(SCREEN_ID_E13);
+        vTaskDelay(2*1000 / portTICK_PERIOD_MS);//延时2S
+        switch_to_screen(SCREEN_ID_E8);//显示左转结束表情
+        vTaskDelay(2*1000 / portTICK_PERIOD_MS);
+        break;
+    }
+    //打印当前左转表情
+    ESP_LOGI(TAG, "UI Update: Left Express -> %d", express);
+}
+
+//显示右转表情
+void app_ui_show_right(void)
+{
+    //生成随机数1-2
+    int express = rand() % 2 + 1;
+    switch (express) { 
+    case 1:
+        switch_to_screen(SCREEN_ID_E17);//显示右转专属表情
+        vTaskDelay(2*1000 / portTICK_PERIOD_MS);//延时2S
+        switch_to_screen(SCREEN_ID_E8);//显示右转结束表情
+        vTaskDelay(4*1000 / portTICK_PERIOD_MS);
+        //显示右转表情0
+        break;
+    case 2:
+        switch_to_screen(SCREEN_ID_E17);//显示右转专属表情
+        vTaskDelay(2*1000 / portTICK_PERIOD_MS);//延时2S
+        switch_to_screen(SCREEN_ID_E15);//显示右转结束表情
+        vTaskDelay(4*1000 / portTICK_PERIOD_MS);
+        break;
+    default:
+        switch_to_screen(SCREEN_ID_E17);
+        vTaskDelay(2*1000 / portTICK_PERIOD_MS);//延时2S
+        switch_to_screen(SCREEN_ID_E8);//显示右转结束表情
+        vTaskDelay(2*1000 / portTICK_PERIOD_MS);
+        break;
+    }
+}
+
+//显示停止表情
+void app_ui_show_stop(void)
+{
+    //获取当前直行表情
+    straight_express_t express = s_current_straight_express;
+    switch (express) { 
+    case STRAIGHT_EXPRESS_0:
+        switch_to_screen(SCREEN_ID_E14);
+        //显示直行表情0
+        break;
+    case STRAIGHT_EXPRESS_1:
+        switch_to_screen(SCREEN_ID_E15);
+        //显示直行表情1
+        break;
+    case STRAIGHT_EXPRESS_2:
+        switch_to_screen(SCREEN_ID_E16);
+        //显示直行表情2
+        break;
+    case STRAIGHT_EXPRESS_3:
+        switch_to_screen(SCREEN_ID_E10);
+        //显示直行表情3
+        break;
+    case STRAIGHT_EXPRESS_4:
+        switch_to_screen(SCREEN_ID_E8);
+        //显示直行表情4
+        break;
+    default:
+        switch_to_screen(SCREEN_ID_E14);
+        break;
+    }
 }

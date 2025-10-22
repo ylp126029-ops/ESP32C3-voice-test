@@ -32,7 +32,7 @@ typedef enum {
  * @brief 初始化状态机
  * @param initial_state 初始状态
  */
-void app_statemachine_init(app_state_t initial_state);
+void app_time_init(void);
 
 /**
  * @brief 处理事件并执行状态迁移

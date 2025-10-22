@@ -4,154 +4,135 @@
 #include "esp_log.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/timers.h"
+#include "freertos/task.h"
 #include <stdlib.h>
+#include "ui_custom/gui_guider.h"
+#include "esp_lvgl_port.h"
 
 static const char *TAG = "app_sm";
 static app_state_t current_state;
-static TimerHandle_t uniform_speed_ui_timer;
+static TimerHandle_t ui_dynamic_timer;//表情由静态切换为动态定时器
+static TimerHandle_t ui_Change_timer;//直行表情切换定时器
+static TimerHandle_t ui_back_timer;//切回直行默认表情定时器
 
-static void uniform_speed_timer_callback(TimerHandle_t xTimer) {
-    app_logic_post_event(APP_EVENT_TIMER_UNIFORM_UI);
-
-}
-
-// 状态进入动作处理
-static void on_enter_state(app_state_t state) {
-    ESP_LOGI(TAG, "进入状态: %d", state);
-    switch (state) {
-        case APP_STATE_UNIFORM_SPEED:
-            // 进入匀速状态，显示一个随机的UI界面
-            app_ui_show_uniform_speed(rand() % 10);
-            // 启动一分钟定时器用于切换UI
-            xTimerStart(uniform_speed_ui_timer, portMAX_DELAY);
-            break;
-        case APP_STATE_TURN_LEFT:
-            // 进入左转状态，显示左转开始UI
-            app_ui_show_turn_left_start();
-            break;
-       case APP_STATE_TURN_LEFT_HARD:
-        //    app_ui_show_turn_left_hard();
-           break;
-        case APP_STATE_TURN_RIGHT:
-            // 进入右转状态，显示右转开始UI
-            app_ui_show_turn_right_start();
-            break;
-       case APP_STATE_TURN_RIGHT_HARD:
-        //    app_ui_show_turn_right_hard();
-           break;
-        case APP_STATE_ACCELERATE:
-            // 进入加速状态，显示加速开始UI
-            app_ui_show_accelerate_start();
-            break;
-        case APP_STATE_DECELERATE:
-            // 进入减速状态，显示减速开始UI
-            app_ui_show_decelerate_start();
-            break;
-        default:
-            // 未知状态，不执行任何操作
-            break;
+static screen_id_t current_screen;
+//表情由静态切换为动态定时器回调函数
+static void ui_dynamic_timer_callback(TimerHandle_t xTimer) {
+    current_screen = app_ui_get_current_screen();//获取当前屏幕ID
+    if(current_screen == SCREEN_ID_E14)
+    {
+        lvgl_port_lock(0);
+        lv_animimg_set_src(guider_ui.E_14_animimg_1, (const void **) E_14_animimg_1_imgs, 30);
+        lv_animimg_set_duration(guider_ui.E_14_animimg_1, 60*30);
+        lv_animimg_set_repeat_count(guider_ui.E_14_animimg_1, 1);
+        lv_animimg_start(guider_ui.E_14_animimg_1);
+        lvgl_port_unlock();
+    }
+    else if(current_screen == SCREEN_ID_E10)
+    {
+        lvgl_port_lock(0);
+        lv_animimg_set_src(guider_ui.E_10_animimg_1, (const void **) E_10_animimg_1_imgs, 30);
+        lv_animimg_set_duration(guider_ui.E_10_animimg_1, 60*30);
+        lv_animimg_set_repeat_count(guider_ui.E_10_animimg_1, 1);
+        lv_animimg_start(guider_ui.E_10_animimg_1);
+        lvgl_port_unlock();
+    }
+    else if(current_screen == SCREEN_ID_E8)
+    {
+        lvgl_port_lock(0);
+        lv_animimg_set_src(guider_ui.E_8_animimg_1, (const void **) E_8_animimg_1_imgs, 30);
+        lv_animimg_set_duration(guider_ui.E_8_animimg_1, 60*30);
+        lv_animimg_set_repeat_count(guider_ui.E_8_animimg_1, 1);
+        lv_animimg_start(guider_ui.E_8_animimg_1);
+        lvgl_port_unlock();
+    }
+    else if(current_screen == SCREEN_ID_E15)
+    {
+        lvgl_port_lock(0);
+        lv_animimg_set_src(guider_ui.E_15_animimg_1, (const void **) E_15_animimg_1_imgs, 40);
+        lv_animimg_set_duration(guider_ui.E_15_animimg_1, 60*40);
+        lv_animimg_set_repeat_count(guider_ui.E_15_animimg_1, 1);
+        lv_animimg_start(guider_ui.E_15_animimg_1);
+        lvgl_port_unlock();
+    }
+    else if(current_screen == SCREEN_ID_E16)
+    {
+        lvgl_port_lock(0);
+        lv_animimg_set_src(guider_ui.E_16_animimg_1, (const void **) E_16_animimg_1_imgs, 40);
+        lv_animimg_set_duration(guider_ui.E_16_animimg_1, 60*40);
+        lv_animimg_set_repeat_count(guider_ui.E_16_animimg_1, 1);
+        lv_animimg_start(guider_ui.E_16_animimg_1);
+        lvgl_port_unlock();
     }
 }
 
-// 状态退出动作处理
-static void on_exit_state(app_state_t state) {
-    ESP_LOGI(TAG, "退出状态: %d", state);
-    switch (state) {
-        case APP_STATE_UNIFORM_SPEED:
-            // 退出匀速状态，停止UI切换定时器
-            xTimerStop(uniform_speed_ui_timer, portMAX_DELAY);
+//表情切换定时器回调函数
+static void ui_Change_timer_callback(TimerHandle_t xTimer) {
+    //生成1-4之间的随机数
+    int random_express = rand() % 4 + 1;
+    //根据随机数切换不同表情
+    switch (random_express) {
+        case 1:
+            app_ui_set_straight_express(STRAIGHT_EXPRESS_1);
             break;
-        case APP_STATE_TURN_LEFT:
-        case APP_STATE_TURN_LEFT_HARD:
-            // 退出左转状态，显示结束UI，并短暂延时
-            app_ui_show_turn_left_end();
-            vTaskDelay(pdMS_TO_TICKS(1000));
+        case 2:
+            app_ui_set_straight_express(STRAIGHT_EXPRESS_2);
             break;
-        case APP_STATE_TURN_RIGHT:
-        case APP_STATE_TURN_RIGHT_HARD:
-            // 退出右转状态，显示结束UI，并短暂延时
-            app_ui_show_turn_right_end();
-            vTaskDelay(pdMS_TO_TICKS(1000));
+        case 3:
+            app_ui_set_straight_express(STRAIGHT_EXPRESS_3);
             break;
-        case APP_STATE_ACCELERATE:
-            // 退出加速状态，显示结束UI，并短暂延时
-            app_ui_show_accelerate_end();
-            vTaskDelay(pdMS_TO_TICKS(1000));
-            break;
-        case APP_STATE_DECELERATE:
-            // 退出减速状态，显示结束UI，并短暂延时
-            app_ui_show_decelerate_end();
-            vTaskDelay(pdMS_TO_TICKS(1000));
+        case 4:
+            app_ui_set_straight_express(STRAIGHT_EXPRESS_4);
             break;
         default:
-            // 未知状态，不执行任何操作
-            break;
     }
+    //停止当前动态表情切换定时器
+    xTimerStop(ui_Change_timer, portMAX_DELAY);
+    //启动切回默认表情定时器回调函数
+    xTimerStart(ui_back_timer, portMAX_DELAY);
 }
 
-void app_statemachine_init(app_state_t initial_state) {
-    // 创建一分钟周期的软件定时器，用于切换匀速状态下的UI
-    uniform_speed_ui_timer = xTimerCreate(
-        "uniform_ui_timer",         // 定时器名称
-        pdMS_TO_TICKS(60 * 1000),   // 定时周期 (1分钟)
+//切回默认表情定时器回调函数
+static void ui_back_timer_callback(TimerHandle_t xTimer) {
+    //停止当前表情切换定时器
+    xTimerStop(ui_back_timer, portMAX_DELAY);
+    //切换回默认表情
+    app_ui_set_straight_express(STRAIGHT_EXPRESS_0);
+    //启动动态表情切换定时器
+    xTimerStart(ui_Change_timer, portMAX_DELAY);
+}
+void app_time_init(void) {
+    // 创建5S周期的软件定时器，用于切换启动表情动态
+    ui_dynamic_timer = xTimerCreate(
+        "ui_dynamic_timer",         // 定时器名称
+        pdMS_TO_TICKS(5 * 1000),   // 定时周期 (5S)
         pdTRUE,                     // 自动重载
         (void *)0,                  // 定时器ID
-        uniform_speed_timer_callback // 回调函数
+        ui_dynamic_timer_callback // 回调函数
     );
+    //启动定时器
+    xTimerStart(ui_dynamic_timer, portMAX_DELAY);
 
-    // 设置初始状态并执行进入动作
-    current_state = initial_state;
-    on_enter_state(current_state);
+    //创建1分钟周期的软件定时器，用于切换直行不同表情
+    ui_Change_timer = xTimerCreate(
+        "ui_Change_timer",         // 定时器名称
+        pdMS_TO_TICKS(30 * 1000),   // 定时周期 (1分钟)
+        pdTRUE,                     // 自动重载
+        (void *)0,                  // 定时器ID
+        ui_Change_timer_callback // 回调函数
+    );
+    //启动定时器
+    xTimerStart(ui_Change_timer, portMAX_DELAY);
+    //创建30S周期的软件定时器，用于切换回直行默认表情
+    ui_back_timer = xTimerCreate(
+        "ui_back_timer",         // 定时器名称
+        pdMS_TO_TICKS(20 * 1000),   // 定时周期 (30S)
+        pdTRUE,                     // 自动重载
+        (void *)0,                  // 定时器ID
+        ui_back_timer_callback // 回调函数
+    );
+ 
 }
-
-// void app_statemachine_handle_event(app_event_t event) {
-//     app_state_t next_state = current_state;
-
-//     switch (current_state) {
-//         case APP_STATE_UNIFORM_SPEED:
-//             // 在匀速状态下，根据不同的动作事件切换到对应状态
-//             if (event == APP_EVENT_MOTION_TURN_LEFT_NORMAL) {
-//                 next_state = APP_STATE_TURN_LEFT;
-//             } else if (event == APP_EVENT_MOTION_TURN_LEFT_HARD) {
-//                next_state = APP_STATE_TURN_LEFT_HARD;
-//             } else if (event == APP_EVENT_MOTION_TURN_RIGHT_NORMAL) {
-//                 next_state = APP_STATE_TURN_RIGHT;
-//             } else if (event == APP_EVENT_MOTION_TURN_RIGHT_HARD) {
-//                next_state = APP_STATE_TURN_RIGHT_HARD;
-//             } else if (event == APP_EVENT_MOTION_ACCELERATE) {
-//                 next_state = APP_STATE_ACCELERATE;
-//             } else if (event == APP_EVENT_MOTION_DECELERATE) {
-//                 next_state = APP_STATE_DECELERATE;
-//             } else if (event == APP_EVENT_TIMER_UNIFORM_UI) {
-//                 // 定时器事件触发，仅切换UI，不改变状态
-//                 app_ui_show_uniform_speed(rand() % 10);
-//             }
-//             break;
-
-//         case APP_STATE_TURN_LEFT:
-//         case APP_STATE_TURN_LEFT_HARD:
-//         case APP_STATE_TURN_RIGHT:
-//         case APP_STATE_TURN_RIGHT_HARD:
-//         case APP_STATE_ACCELERATE:
-//         case APP_STATE_DECELERATE:
-//             // 在任何一个动作状态下，接收到“动作结束”事件都会返回到匀速状态
-//             if (event == APP_EVENT_MOTION_ENDED) {
-//                 next_state = APP_STATE_UNIFORM_SPEED;
-//             }
-//             break;
-
-//         default:
-//             // 未知状态，不处理事件
-//             break;
-//     }
-
-//     // 如果状态发生了迁移
-//     if (next_state != current_state) {
-//         on_exit_state(current_state);  // 执行当前状态的退出动作
-//         current_state = next_state;    // 更新状态
-//         on_enter_state(current_state); // 执行新状态的进入动作
-//     }
-// }
 
 void app_statemachine_handle_event(app_event_t event) {
 
@@ -159,37 +140,43 @@ void app_statemachine_handle_event(app_event_t event) {
     switch (current_event) {
         case APP_EVENT_MOTION_TURN_LEFT_NORMAL://左
             // 进入左转状态，显示左转开始UI
-            app_ui_show_turn_left_start();
-            vTaskDelay(pdMS_TO_TICKS(1000*5));
-            app_ui_show_decelerate_start();
-            vTaskDelay(pdMS_TO_TICKS(1000*10));
+            // app_ui_show_turn_left_start();
+            // vTaskDelay(pdMS_TO_TICKS(1000*2));
+            // app_ui_show_decelerate_start();
+            // vTaskDelay(pdMS_TO_TICKS(1000*2));
+            app_ui_show_left();
             break;
         case APP_EVENT_MOTION_TURN_LEFT_HARD://左
         //    app_ui_show_turn_left_hard();
-            app_ui_show_turn_left_start();
-            vTaskDelay(pdMS_TO_TICKS(1000*5));
-            app_ui_show_decelerate_start();
-            vTaskDelay(pdMS_TO_TICKS(1000*10));
+            // app_ui_show_turn_left_start();
+            // vTaskDelay(pdMS_TO_TICKS(1000*2));
+            // app_ui_show_decelerate_start();
+            // vTaskDelay(pdMS_TO_TICKS(1000*2));
+            app_ui_show_left();
             break;
         case APP_EVENT_MOTION_TURN_RIGHT_NORMAL://右
             // 进入右转状态，显示右转开始UI
-            app_ui_show_turn_right_start();
-            vTaskDelay(pdMS_TO_TICKS(1000*5));
-            app_ui_show_decelerate_start();
-            vTaskDelay(pdMS_TO_TICKS(1000*10));
+            // app_ui_show_turn_right_start();
+            // vTaskDelay(pdMS_TO_TICKS(1000*2));
+            // app_ui_show_decelerate_start();
+            // vTaskDelay(pdMS_TO_TICKS(1000*2));
+            app_ui_show_right();
             break;
         case APP_EVENT_MOTION_TURN_RIGHT_HARD://右
         //    app_ui_show_turn_right_hard();
-            app_ui_show_turn_right_start();
-            vTaskDelay(pdMS_TO_TICKS(1000*5));
-            app_ui_show_decelerate_start();
-            vTaskDelay(pdMS_TO_TICKS(1000*10));
+            // app_ui_show_turn_right_start();
+            // vTaskDelay(pdMS_TO_TICKS(1000*2));
+            // app_ui_show_decelerate_start();
+            // vTaskDelay(pdMS_TO_TICKS(1000*2));
+            app_ui_show_right();
             break;
         case APP_EVENT_MOTION_ACCELERATE://直行
             // 进入加速状态，显示加速开始UI
             // app_ui_show_decelerate_end();
-            app_ui_test();
-            vTaskDelay(pdMS_TO_TICKS(1000));
+            // app_ui_test();
+            app_ui_show_straight();
+            
+            // vTaskDelay(pdMS_TO_TICKS(1000));
             break;
         case APP_EVENT_MOTION_DECELERATE://停止
             // 进入减速状态，显示减速开始UI
@@ -201,36 +188,3 @@ void app_statemachine_handle_event(app_event_t event) {
             break;
     }
 }
-
-// // 显示左转ui
-// void Shou_Ui_Left(void)
-// {
-//     app_ui_show_turn_left_start();//播放左转入场ui
-//     vTaskDelay(pdMS_TO_TICKS(1000*10));// 等待10秒
-//     app_ui_show_turn_left_end();//播放左转出场ui
-//     vTaskDelay(pdMS_TO_TICKS(1000*20));//维持20秒
-// }
-// // 显示右转ui
-// void Shou_Ui_Right(void)
-// {
-//     app_ui_show_turn_right_start();//播放右转into ui
-//     vTaskDelay(pdMS_TO_TICKS(1000*10));// 等待10秒
-//     app_ui_show_turn_right_end();//播放右转out ui
-//     vTaskDelay(pdMS_TO_TICKS(1000*20));//维持20秒
-// }
-
-// //显示直行ui
-// void Shou_Ui_Straight(void)
-// {
-//     app_ui_show_straight_start();//播放直行into ui
-//     vTaskDelay(pdMS_TO_TICKS(1000*10));// 等待10秒
-// }
-
-// //显示停止ui
-// void Shou_Ui_Stop(void)
-// {
-//     app_ui_show_stop_start();//播放停止into ui
-//     vTaskDelay(pdMS_TO_TICKS(1000*10));// 等待10秒
-// }
-
-
