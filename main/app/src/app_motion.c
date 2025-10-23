@@ -65,10 +65,10 @@ static void calibrate_acce_y(imu_data_t data)
 {
     num++;
     acce_y_offset += data.acce_y;
-    if(num==5)
+    if(num==6)
     {
         num = 0;
-        acce_y_offset /= 5.0f;
+        acce_y_offset /= 6.0f;
         //向前移动的Y轴加速度阈值
         MOVE_THRESHOLD_G  = acce_y_offset-0.02f; // 判定为“向前移动”的y轴加速度阈值 (单位: g)
         //向后移动的Y轴加速度阈值

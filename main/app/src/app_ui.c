@@ -95,7 +95,7 @@ esp_err_t app_ui_init(void)
 
     setup_ui(&guider_ui);
     events_init(&guider_ui);
-
+    srand(xTaskGetTickCount());  // 基于系统滴答计数初始化随机种子
     // g_current_screen = SCREEN_ID_E14; // Change default to E14
 
     ESP_LOGI(TAG, "UI Init Finished, default screen is E14.");
@@ -209,30 +209,30 @@ void app_ui_show_straight(void)
 void app_ui_show_left(void)
 {
     //生成随机数1-3
-    int express = rand() % 3 + 1;
+    int express = random_express_left();
     switch (express) { 
     case 1:
         switch_to_screen(SCREEN_ID_E16);//显示左转专属表情
-        vTaskDelay(2*1000 / portTICK_PERIOD_MS);//延时2S
+        vTaskDelay(3*1000 / portTICK_PERIOD_MS);//延时3S
         switch_to_screen(SCREEN_ID_E15);//显示左转结束表情
         vTaskDelay(30*1000 / portTICK_PERIOD_MS);
         //显示左转表情0
         break;
     case 2:
         switch_to_screen(SCREEN_ID_E16);//显示左转专属表情
-        vTaskDelay(2*1000 / portTICK_PERIOD_MS);//延时2S
+        vTaskDelay(3*1000 / portTICK_PERIOD_MS);//延时3S
         switch_to_screen(SCREEN_ID_E2);//显示左转结束表情
         vTaskDelay(30*1000 / portTICK_PERIOD_MS);        
         break;
     case 3:
         switch_to_screen(SCREEN_ID_E16);//显示左转专属表情
-        vTaskDelay(2*1000 / portTICK_PERIOD_MS);//延时2S
+        vTaskDelay(3*1000 / portTICK_PERIOD_MS);//延时3S
         switch_to_screen(SCREEN_ID_E8);//显示左转结束表情
         vTaskDelay(30*1000 / portTICK_PERIOD_MS);
         break;
     default:
         switch_to_screen(SCREEN_ID_E16);
-        vTaskDelay(2*1000 / portTICK_PERIOD_MS);//延时2S
+        vTaskDelay(3*1000 / portTICK_PERIOD_MS);//延时3S
         switch_to_screen(SCREEN_ID_E15);//显示左转结束表情
         vTaskDelay(30*1000 / portTICK_PERIOD_MS);
         break;
@@ -245,30 +245,30 @@ void app_ui_show_left(void)
 void app_ui_show_right(void)
 {
     //生成随机数1-3
-    int express = rand() % 3 + 1;
+    int express = random_express_right();
     switch (express) { 
     case 1:
         switch_to_screen(SCREEN_ID_E17);//显示右转专属表情
-        vTaskDelay(2*1000 / portTICK_PERIOD_MS);//延时2S
+        vTaskDelay(3*1000 / portTICK_PERIOD_MS);//延时3S
         switch_to_screen(SCREEN_ID_E2);//显示右转结束表情
         vTaskDelay(30*1000 / portTICK_PERIOD_MS);
         //显示右转表情0
         break;
     case 2:
         switch_to_screen(SCREEN_ID_E17);//显示右转专属表情
-        vTaskDelay(2*1000 / portTICK_PERIOD_MS);//延时2S
+        vTaskDelay(3*1000 / portTICK_PERIOD_MS);//延时3S
         switch_to_screen(SCREEN_ID_E8);//显示右转结束表情
         vTaskDelay(30*1000 / portTICK_PERIOD_MS);
         break;
     case 3:
         switch_to_screen(SCREEN_ID_E17);//显示右转专属表情
-        vTaskDelay(2*1000 / portTICK_PERIOD_MS);//延时2S
+        vTaskDelay(3*1000 / portTICK_PERIOD_MS);//延时3S
         switch_to_screen(SCREEN_ID_E15);//显示右转结束表情
         vTaskDelay(30*1000 / portTICK_PERIOD_MS);
         break;
     default:
         switch_to_screen(SCREEN_ID_E17);
-        vTaskDelay(2*1000 / portTICK_PERIOD_MS);//延时2S
+        vTaskDelay(3*1000 / portTICK_PERIOD_MS);//延时3S
         switch_to_screen(SCREEN_ID_E15);//显示右转结束表情
         vTaskDelay(30*1000 / portTICK_PERIOD_MS);
         break;
@@ -326,4 +326,37 @@ int random_express(void)
         }
     }
     return express[index++ % 4];
+}
+
+//编写一个随机函数，要求随机返回1-3，第一次的时候将1-3随机排好序，每调用3次后又重新排序
+int random_express_left(void)
+{
+    static int express[3] = {1, 2, 3};
+    static int index = 0;
+    if (index % 3 == 0) {
+        // 每三次调用，随机排序
+        for (int i = 0; i < 3; i++) {
+            int j = rand() % 3;
+            int temp = express[i];
+            express[i] = express[j];
+            express[j] = temp;
+        }
+    }
+    return express[index++ % 3];
+}
+
+int random_express_right(void)
+{
+    static int express[3] = {1, 2, 3};
+    static int index = 0;
+    if (index % 3 == 0) {
+        // 每三次调用，随机排序
+        for (int i = 0; i < 3; i++) {
+            int j = rand() % 3;
+            int temp = express[i];
+            express[i] = express[j];
+            express[j] = temp;
+        }
+    }
+    return express[index++ % 3];    
 }

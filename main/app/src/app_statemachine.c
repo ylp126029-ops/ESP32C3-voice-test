@@ -51,7 +51,7 @@ static void ui_dynamic_timer_callback(TimerHandle_t xTimer) {
         lvgl_port_lock(0);
         lv_animimg_set_src(guider_ui.E_8_animimg_1, (const void **) E_8_animimg_1_imgs, 30);
         lv_animimg_set_duration(guider_ui.E_8_animimg_1, 60*30);
-        lv_animimg_set_repeat_count(guider_ui.E_8_animimg_1, 1);
+        lv_animimg_set_repeat_count(guider_ui.E_8_animimg_1, 2);
         lv_animimg_start(guider_ui.E_8_animimg_1);
         lvgl_port_unlock();
     }
@@ -151,10 +151,10 @@ void app_time_init(void) {
     );
     //启动定时器
     xTimerStart(ui_Change_timer, portMAX_DELAY);
-    //创建30S周期的软件定时器，用于切换回直行默认表情
+    //创建45S周期的软件定时器，用于切换回直行默认表情
     ui_back_timer = xTimerCreate(
         "ui_back_timer",         // 定时器名称
-        pdMS_TO_TICKS(30 * 1000),   // 定时周期 (30S)
+        pdMS_TO_TICKS(45 * 1000),   // 定时周期 (45S)
         pdTRUE,                     // 自动重载
         (void *)0,                  // 定时器ID
         ui_back_timer_callback // 回调函数
