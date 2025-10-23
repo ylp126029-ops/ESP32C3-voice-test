@@ -19,52 +19,7 @@ static screen_id_t current_screen;
 //表情由静态切换为动态定时器回调函数
 static void ui_dynamic_timer_callback(TimerHandle_t xTimer) {
     current_screen = app_ui_get_current_screen();//获取当前屏幕ID
-    if(current_screen == SCREEN_ID_E14)
-    {
-        lvgl_port_lock(0);
-        lv_animimg_set_src(guider_ui.E_14_animimg_1, (const void **) E_14_animimg_1_imgs, 30);
-        lv_animimg_set_duration(guider_ui.E_14_animimg_1, 60*30);
-        lv_animimg_set_repeat_count(guider_ui.E_14_animimg_1, 1);
-        lv_animimg_start(guider_ui.E_14_animimg_1);
-        lvgl_port_unlock();
-    }
-    else if(current_screen == SCREEN_ID_E10)
-    {
-        lvgl_port_lock(0);
-        lv_animimg_set_src(guider_ui.E_10_animimg_1, (const void **) E_10_animimg_1_imgs, 30);
-        lv_animimg_set_duration(guider_ui.E_10_animimg_1, 60*30);
-        lv_animimg_set_repeat_count(guider_ui.E_10_animimg_1, 1);
-        lv_animimg_start(guider_ui.E_10_animimg_1);
-        lvgl_port_unlock();
-    }
-    else if(current_screen == SCREEN_ID_E8)
-    {
-        lvgl_port_lock(0);
-        lv_animimg_set_src(guider_ui.E_8_animimg_1, (const void **) E_8_animimg_1_imgs, 30);
-        lv_animimg_set_duration(guider_ui.E_8_animimg_1, 60*30);
-        lv_animimg_set_repeat_count(guider_ui.E_8_animimg_1, 1);
-        lv_animimg_start(guider_ui.E_8_animimg_1);
-        lvgl_port_unlock();
-    }
-    else if(current_screen == SCREEN_ID_E15)
-    {
-        lvgl_port_lock(0);
-        lv_animimg_set_src(guider_ui.E_15_animimg_1, (const void **) E_15_animimg_1_imgs, 30);
-        lv_animimg_set_duration(guider_ui.E_15_animimg_1, 60*30);
-        lv_animimg_set_repeat_count(guider_ui.E_15_animimg_1, 1);
-        lv_animimg_start(guider_ui.E_15_animimg_1);
-        lvgl_port_unlock();
-    }
-    else if(current_screen == SCREEN_ID_E16)
-    {
-        lvgl_port_lock(0);
-        lv_animimg_set_src(guider_ui.E_16_animimg_1, (const void **) E_16_animimg_1_imgs, 30);
-        lv_animimg_set_duration(guider_ui.E_16_animimg_1, 60*30);
-        lv_animimg_set_repeat_count(guider_ui.E_16_animimg_1, 1);
-        lv_animimg_start(guider_ui.E_16_animimg_1);
-        lvgl_port_unlock();
-    }
-    else if(current_screen == SCREEN_ID_E2)
+    if(current_screen == SCREEN_ID_E2)
     {
         lvgl_port_lock(0);
         lv_animimg_set_src(guider_ui.E_2_animimg_1, (const void **) E_2_animimg_1_imgs, 30);
@@ -91,15 +46,60 @@ static void ui_dynamic_timer_callback(TimerHandle_t xTimer) {
         lv_animimg_start(guider_ui.E_7_animimg_1);
         lvgl_port_unlock();
     }
+    else if(current_screen == SCREEN_ID_E8)
+    {
+        lvgl_port_lock(0);
+        lv_animimg_set_src(guider_ui.E_8_animimg_1, (const void **) E_8_animimg_1_imgs, 30);
+        lv_animimg_set_duration(guider_ui.E_8_animimg_1, 60*30);
+        lv_animimg_set_repeat_count(guider_ui.E_8_animimg_1, 1);
+        lv_animimg_start(guider_ui.E_8_animimg_1);
+        lvgl_port_unlock();
+    }
+    else if(current_screen == SCREEN_ID_E10)
+    {
+        lvgl_port_lock(0);
+        lv_animimg_set_src(guider_ui.E_10_animimg_1, (const void **) E_10_animimg_1_imgs, 30);
+        lv_animimg_set_duration(guider_ui.E_10_animimg_1, 60*30);
+        lv_animimg_set_repeat_count(guider_ui.E_10_animimg_1, 1);
+        lv_animimg_start(guider_ui.E_10_animimg_1);
+        lvgl_port_unlock();
+    }
+    else if(current_screen == SCREEN_ID_E13)
+    {
+        lvgl_port_lock(0);
+        lv_animimg_set_src(guider_ui.E_13_animimg_1, (const void **) E_13_animimg_1_imgs, 30);
+        lv_animimg_set_duration(guider_ui.E_13_animimg_1, 60*30);
+        lv_animimg_set_repeat_count(guider_ui.E_13_animimg_1, 1);
+        lv_animimg_start(guider_ui.E_13_animimg_1);
+        lvgl_port_unlock();
+    }
+    else if(current_screen == SCREEN_ID_E14)
+    {
+        lvgl_port_lock(0);
+        lv_animimg_set_src(guider_ui.E_14_animimg_1, (const void **) E_14_animimg_1_imgs, 30);
+        lv_animimg_set_duration(guider_ui.E_14_animimg_1, 60*30);
+        lv_animimg_set_repeat_count(guider_ui.E_14_animimg_1, 1);
+        lv_animimg_start(guider_ui.E_14_animimg_1);
+        lvgl_port_unlock();
+    }
+    else if(current_screen == SCREEN_ID_E15)
+    {
+        lvgl_port_lock(0);
+        lv_animimg_set_src(guider_ui.E_15_animimg_1, (const void **) E_15_animimg_1_imgs, 30);
+        lv_animimg_set_duration(guider_ui.E_15_animimg_1, 60*30);
+        lv_animimg_set_repeat_count(guider_ui.E_15_animimg_1, 1);
+        lv_animimg_start(guider_ui.E_15_animimg_1);
+        lvgl_port_unlock();
+    }
 
 }
 
 //表情切换定时器回调函数
 static void ui_Change_timer_callback(TimerHandle_t xTimer) {
     //生成1-4之间的随机数
-    int random_express = rand() % 4 + 1;
+    int express = random_express();
     //根据随机数切换不同表情
-    switch (random_express) {
+    switch (express) {
         case 1:
             app_ui_set_straight_express(STRAIGHT_EXPRESS_1);
             break;
@@ -130,10 +130,10 @@ static void ui_back_timer_callback(TimerHandle_t xTimer) {
     xTimerStart(ui_Change_timer, portMAX_DELAY);
 }
 void app_time_init(void) {
-    // 创建5S周期的软件定时器，用于切换启动表情动态
+    // 创建8S周期的软件定时器，用于切换启动表情动态
     ui_dynamic_timer = xTimerCreate(
         "ui_dynamic_timer",         // 定时器名称
-        pdMS_TO_TICKS(5 * 1000),   // 定时周期 (5S)
+        pdMS_TO_TICKS(8 * 1000),   // 定时周期 (8S)
         pdTRUE,                     // 自动重载
         (void *)0,                  // 定时器ID
         ui_dynamic_timer_callback // 回调函数
@@ -144,7 +144,7 @@ void app_time_init(void) {
     //创建1分钟周期的软件定时器，用于切换直行不同表情
     ui_Change_timer = xTimerCreate(
         "ui_Change_timer",         // 定时器名称
-        pdMS_TO_TICKS(30 * 1000),   // 定时周期 (1分钟)
+        pdMS_TO_TICKS(60 * 1000),   // 定时周期 (1分钟)
         pdTRUE,                     // 自动重载
         (void *)0,                  // 定时器ID
         ui_Change_timer_callback // 回调函数
@@ -154,7 +154,7 @@ void app_time_init(void) {
     //创建30S周期的软件定时器，用于切换回直行默认表情
     ui_back_timer = xTimerCreate(
         "ui_back_timer",         // 定时器名称
-        pdMS_TO_TICKS(20 * 1000),   // 定时周期 (30S)
+        pdMS_TO_TICKS(30 * 1000),   // 定时周期 (30S)
         pdTRUE,                     // 自动重载
         (void *)0,                  // 定时器ID
         ui_back_timer_callback // 回调函数
@@ -168,48 +168,25 @@ void app_statemachine_handle_event(app_event_t event) {
     switch (current_event) {
         case APP_EVENT_MOTION_TURN_LEFT_NORMAL://左
             // 进入左转状态，显示左转开始UI
-            // app_ui_show_turn_left_start();
-            // vTaskDelay(pdMS_TO_TICKS(1000*2));
-            // app_ui_show_decelerate_start();
-            // vTaskDelay(pdMS_TO_TICKS(1000*2));
             app_ui_show_left();
             break;
         case APP_EVENT_MOTION_TURN_LEFT_HARD://左
-        //    app_ui_show_turn_left_hard();
-            // app_ui_show_turn_left_start();
-            // vTaskDelay(pdMS_TO_TICKS(1000*2));
-            // app_ui_show_decelerate_start();
-            // vTaskDelay(pdMS_TO_TICKS(1000*2));
             app_ui_show_left();
             break;
         case APP_EVENT_MOTION_TURN_RIGHT_NORMAL://右
             // 进入右转状态，显示右转开始UI
-            // app_ui_show_turn_right_start();
-            // vTaskDelay(pdMS_TO_TICKS(1000*2));
-            // app_ui_show_decelerate_start();
-            // vTaskDelay(pdMS_TO_TICKS(1000*2));
             app_ui_show_right();
             break;
         case APP_EVENT_MOTION_TURN_RIGHT_HARD://右
-        //    app_ui_show_turn_right_hard();
-            // app_ui_show_turn_right_start();
-            // vTaskDelay(pdMS_TO_TICKS(1000*2));
-            // app_ui_show_decelerate_start();
-            // vTaskDelay(pdMS_TO_TICKS(1000*2));
             app_ui_show_right();
             break;
         case APP_EVENT_MOTION_ACCELERATE://直行
-            // 进入加速状态，显示加速开始UI
-            // app_ui_show_decelerate_end();
+            // 进入直行状态，显示UI
             // app_ui_test();
             app_ui_show_straight();
-            
-            // vTaskDelay(pdMS_TO_TICKS(1000));
             break;
         case APP_EVENT_MOTION_DECELERATE://停止
-            // 进入减速状态，显示减速开始UI
-            // app_ui_show_accelerate_start();
-            // vTaskDelay(pdMS_TO_TICKS(1000));
+            // 进入停止状态，显示UI
             app_ui_show_stop();
             break;
         default:

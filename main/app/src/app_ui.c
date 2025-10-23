@@ -96,7 +96,7 @@ esp_err_t app_ui_init(void)
     setup_ui(&guider_ui);
     events_init(&guider_ui);
 
-    g_current_screen = SCREEN_ID_E14; // Change default to E14
+    // g_current_screen = SCREEN_ID_E14; // Change default to E14
 
     ESP_LOGI(TAG, "UI Init Finished, default screen is E14.");
     ESP_LOGI(TAG, "Initial memory: %d bytes", (size_t)esp_get_free_heap_size());
@@ -178,15 +178,15 @@ void app_ui_show_straight(void)
     straight_express_t express = s_current_straight_express;
     switch (express) { 
     case STRAIGHT_EXPRESS_0:
-        switch_to_screen(SCREEN_ID_E2);
+        switch_to_screen(SCREEN_ID_E14);
         //显示直行表情0
         break;
     case STRAIGHT_EXPRESS_1:
-        switch_to_screen(SCREEN_ID_E15);
+        switch_to_screen(SCREEN_ID_E5);
         //显示直行表情1
         break;
     case STRAIGHT_EXPRESS_2:
-        switch_to_screen(SCREEN_ID_E5);
+        switch_to_screen(SCREEN_ID_E7);
         //显示直行表情2
         break;
     case STRAIGHT_EXPRESS_3:
@@ -194,7 +194,7 @@ void app_ui_show_straight(void)
         //显示直行表情3
         break;
     case STRAIGHT_EXPRESS_4:
-        switch_to_screen(SCREEN_ID_E8);
+        switch_to_screen(SCREEN_ID_E13);
         //显示直行表情4
         break;
     default:
@@ -208,27 +208,33 @@ void app_ui_show_straight(void)
 //显示左转表情
 void app_ui_show_left(void)
 {
-    //生成随机数1-2
-    int express = rand() % 2 + 1;
+    //生成随机数1-3
+    int express = rand() % 3 + 1;
     switch (express) { 
     case 1:
-        switch_to_screen(SCREEN_ID_E13);//显示左转专属表情
+        switch_to_screen(SCREEN_ID_E16);//显示左转专属表情
         vTaskDelay(2*1000 / portTICK_PERIOD_MS);//延时2S
-        switch_to_screen(SCREEN_ID_E8);//显示左转结束表情
-        vTaskDelay(4*1000 / portTICK_PERIOD_MS);
+        switch_to_screen(SCREEN_ID_E15);//显示左转结束表情
+        vTaskDelay(30*1000 / portTICK_PERIOD_MS);
         //显示左转表情0
         break;
     case 2:
-        switch_to_screen(SCREEN_ID_E13);//显示左转专属表情
+        switch_to_screen(SCREEN_ID_E16);//显示左转专属表情
         vTaskDelay(2*1000 / portTICK_PERIOD_MS);//延时2S
-        switch_to_screen(SCREEN_ID_E5);//显示左转结束表情
-        vTaskDelay(4*1000 / portTICK_PERIOD_MS);        
+        switch_to_screen(SCREEN_ID_E2);//显示左转结束表情
+        vTaskDelay(30*1000 / portTICK_PERIOD_MS);        
         break;
-    default:
-        switch_to_screen(SCREEN_ID_E13);
+    case 3:
+        switch_to_screen(SCREEN_ID_E16);//显示左转专属表情
         vTaskDelay(2*1000 / portTICK_PERIOD_MS);//延时2S
         switch_to_screen(SCREEN_ID_E8);//显示左转结束表情
-        vTaskDelay(2*1000 / portTICK_PERIOD_MS);
+        vTaskDelay(30*1000 / portTICK_PERIOD_MS);
+        break;
+    default:
+        switch_to_screen(SCREEN_ID_E16);
+        vTaskDelay(2*1000 / portTICK_PERIOD_MS);//延时2S
+        switch_to_screen(SCREEN_ID_E15);//显示左转结束表情
+        vTaskDelay(30*1000 / portTICK_PERIOD_MS);
         break;
     }
     //打印当前左转表情
@@ -238,27 +244,33 @@ void app_ui_show_left(void)
 //显示右转表情
 void app_ui_show_right(void)
 {
-    //生成随机数1-2
-    int express = rand() % 2 + 1;
+    //生成随机数1-3
+    int express = rand() % 3 + 1;
     switch (express) { 
     case 1:
         switch_to_screen(SCREEN_ID_E17);//显示右转专属表情
         vTaskDelay(2*1000 / portTICK_PERIOD_MS);//延时2S
-        switch_to_screen(SCREEN_ID_E8);//显示右转结束表情
-        vTaskDelay(4*1000 / portTICK_PERIOD_MS);
+        switch_to_screen(SCREEN_ID_E2);//显示右转结束表情
+        vTaskDelay(30*1000 / portTICK_PERIOD_MS);
         //显示右转表情0
         break;
     case 2:
         switch_to_screen(SCREEN_ID_E17);//显示右转专属表情
         vTaskDelay(2*1000 / portTICK_PERIOD_MS);//延时2S
-        switch_to_screen(SCREEN_ID_E7);//显示右转结束表情
-        vTaskDelay(4*1000 / portTICK_PERIOD_MS);
+        switch_to_screen(SCREEN_ID_E8);//显示右转结束表情
+        vTaskDelay(30*1000 / portTICK_PERIOD_MS);
+        break;
+    case 3:
+        switch_to_screen(SCREEN_ID_E17);//显示右转专属表情
+        vTaskDelay(2*1000 / portTICK_PERIOD_MS);//延时2S
+        switch_to_screen(SCREEN_ID_E15);//显示右转结束表情
+        vTaskDelay(30*1000 / portTICK_PERIOD_MS);
         break;
     default:
         switch_to_screen(SCREEN_ID_E17);
         vTaskDelay(2*1000 / portTICK_PERIOD_MS);//延时2S
-        switch_to_screen(SCREEN_ID_E8);//显示右转结束表情
-        vTaskDelay(2*1000 / portTICK_PERIOD_MS);
+        switch_to_screen(SCREEN_ID_E15);//显示右转结束表情
+        vTaskDelay(30*1000 / portTICK_PERIOD_MS);
         break;
     }
 }
@@ -269,26 +281,46 @@ void app_ui_show_stop(void)
     //获取当前停止表情
     straight_express_t express = s_current_straight_express;
     switch (express) { 
-    case STRAIGHT_EXPRESS_0:
-        switch_to_screen(SCREEN_ID_E10);
-        break;
-    case STRAIGHT_EXPRESS_1:
-        switch_to_screen(SCREEN_ID_E16);
-        break;
-    case STRAIGHT_EXPRESS_2:
-        switch_to_screen(SCREEN_ID_E15);
-        break;
-    case STRAIGHT_EXPRESS_3:
-        switch_to_screen(SCREEN_ID_E8);
-        break;
-    case STRAIGHT_EXPRESS_4:
-        switch_to_screen(SCREEN_ID_E2);
-        break;
-    default:
-        switch_to_screen(SCREEN_ID_E10);
-        break;
+        case STRAIGHT_EXPRESS_0:
+            switch_to_screen(SCREEN_ID_E13);
+            //显示停止表情0
+            break;
+        case STRAIGHT_EXPRESS_1:
+            switch_to_screen(SCREEN_ID_E14);
+            //显示停止表情1
+            break;
+        case STRAIGHT_EXPRESS_2:
+            switch_to_screen(SCREEN_ID_E10);
+            //显示停止表情2
+            break;
+        case STRAIGHT_EXPRESS_3:
+            switch_to_screen(SCREEN_ID_E7);
+            //显示停止表情3 
+            break;
+        case STRAIGHT_EXPRESS_4:
+            switch_to_screen(SCREEN_ID_E5);
+            //显示停止表情4
+            break;
+        default:
+            switch_to_screen(SCREEN_ID_E13);
+            break;
     }
-
-    // switch_to_screen(SCREEN_ID_E5);
     
+}
+
+//编写一个随机函数，要求随机返回1-4，第一次的时候将1-4随机排好序，每调用4次后又重新排序
+int random_express(void)
+{
+    static int express[4] = {1, 2, 3, 4};
+    static int index = 0;
+    if (index % 4 == 0) {
+        // 每四次调用，随机排序
+        for (int i = 0; i < 4; i++) {
+            int j = rand() % 4;
+            int temp = express[i];
+            express[i] = express[j];
+            express[j] = temp;
+        }
+    }
+    return express[index++ % 4];
 }

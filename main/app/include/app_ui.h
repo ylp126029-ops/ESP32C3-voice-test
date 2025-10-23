@@ -74,4 +74,5 @@ void app_ui_set_straight_express(straight_express_t express);//设置当前直�
 void app_ui_show_left(void);//显示左转表情
 void app_ui_show_right(void);//显示右转表情
 void app_ui_show_stop(void);//显示停止表情
+int random_express(void);//随机返回1-4，第一次的时候将1-4随机排好序，每调用4次后又重新排序
 #endif /* APP_UI_H_ */

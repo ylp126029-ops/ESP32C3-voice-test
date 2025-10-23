@@ -35,8 +35,9 @@ void setup_scr_E_13(lv_ui *ui)
     lv_animimg_set_src(ui->E_13_animimg_1, (const void **) E_13_animimg_1_imgs, 30);
     lv_animimg_set_duration(ui->E_13_animimg_1, 30*30);
     lv_animimg_set_repeat_count(ui->E_13_animimg_1, LV_ANIM_REPEAT_INFINITE);
-    lv_animimg_start(ui->E_13_animimg_1);
+    // lv_animimg_start(ui->E_13_animimg_1);
 
+    lv_image_set_src(ui->E_13_animimg_1, E_13_animimg_1_imgs[0]);
     //The custom code of E_13.
     //Update current screen layout.
     lv_obj_update_layout(ui->E_13);

@@ -105,7 +105,7 @@ esp_err_t app_lcd_init(void)
     esp_lcd_panel_init(lcd_panel);
     // esp_lcd_panel_mirror(lcd_panel, true, true);
     esp_lcd_panel_disp_on_off(lcd_panel, true);
-    esp_lcd_panel_invert_color(lcd_panel, true);
+    esp_lcd_panel_invert_color(lcd_panel, true);// 反相显示
     /* LCD backlight on */
     ESP_ERROR_CHECK(gpio_set_level(EXAMPLE_LCD_GPIO_BL, EXAMPLE_LCD_BL_ON_LEVEL));
 
