@@ -73,4 +73,5 @@ void app_ui_show_straight(void);//显示当前直行表情
 void app_ui_set_straight_express(straight_express_t express);//设置当前直行表情
 void app_ui_show_left(void);//显示左转表情
 void app_ui_show_right(void);//显示右转表情
+void app_ui_show_stop(void);//显示停止表情
 #endif /* APP_UI_H_ */

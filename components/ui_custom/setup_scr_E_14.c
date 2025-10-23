@@ -30,7 +30,7 @@ void setup_scr_E_14(lv_ui *ui)
 
     //Write codes E_14_animimg_1
     ui->E_14_animimg_1 = lv_animimg_create(ui->E_14);
-    lv_obj_set_pos(ui->E_14_animimg_1, 44, 44);
+    lv_obj_set_pos(ui->E_14_animimg_1, 45, 45);
     lv_obj_set_size(ui->E_14_animimg_1, 150, 150);
     lv_animimg_set_src(ui->E_14_animimg_1, (const void **) E_14_animimg_1_imgs, 30);
     lv_animimg_set_duration(ui->E_14_animimg_1, 30*30);

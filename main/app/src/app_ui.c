@@ -150,7 +150,7 @@ void app_ui_show_turn_left_end(void)
 void app_ui_show_turn_right_start(void)
 {
     ESP_LOGI(TAG, "UI Update: Turn Right Start -> E17");
-    switch_to_screen(SCREEN_ID_E17);
+    // switch_to_screen(SCREEN_ID_E17);
 }
 
 void app_ui_show_turn_right_end(void)
@@ -178,7 +178,7 @@ void app_ui_show_straight(void)
     straight_express_t express = s_current_straight_express;
     switch (express) { 
     case STRAIGHT_EXPRESS_0:
-        switch_to_screen(SCREEN_ID_E14);
+        switch_to_screen(SCREEN_ID_E2);
         //显示直行表情0
         break;
     case STRAIGHT_EXPRESS_1:
@@ -186,7 +186,7 @@ void app_ui_show_straight(void)
         //显示直行表情1
         break;
     case STRAIGHT_EXPRESS_2:
-        switch_to_screen(SCREEN_ID_E16);
+        switch_to_screen(SCREEN_ID_E5);
         //显示直行表情2
         break;
     case STRAIGHT_EXPRESS_3:
@@ -221,7 +221,7 @@ void app_ui_show_left(void)
     case 2:
         switch_to_screen(SCREEN_ID_E13);//显示左转专属表情
         vTaskDelay(2*1000 / portTICK_PERIOD_MS);//延时2S
-        switch_to_screen(SCREEN_ID_E15);//显示左转结束表情
+        switch_to_screen(SCREEN_ID_E5);//显示左转结束表情
         vTaskDelay(4*1000 / portTICK_PERIOD_MS);        
         break;
     default:
@@ -251,7 +251,7 @@ void app_ui_show_right(void)
     case 2:
         switch_to_screen(SCREEN_ID_E17);//显示右转专属表情
         vTaskDelay(2*1000 / portTICK_PERIOD_MS);//延时2S
-        switch_to_screen(SCREEN_ID_E15);//显示右转结束表情
+        switch_to_screen(SCREEN_ID_E7);//显示右转结束表情
         vTaskDelay(4*1000 / portTICK_PERIOD_MS);
         break;
     default:
@@ -263,34 +263,32 @@ void app_ui_show_right(void)
     }
 }
 
-//显示停止表情
+//显示停止表情，，，目前和直行用同一套表情
 void app_ui_show_stop(void)
 {
-    //获取当前直行表情
+    //获取当前停止表情
     straight_express_t express = s_current_straight_express;
     switch (express) { 
     case STRAIGHT_EXPRESS_0:
-        switch_to_screen(SCREEN_ID_E14);
-        //显示直行表情0
+        switch_to_screen(SCREEN_ID_E10);
         break;
     case STRAIGHT_EXPRESS_1:
-        switch_to_screen(SCREEN_ID_E15);
-        //显示直行表情1
+        switch_to_screen(SCREEN_ID_E16);
         break;
     case STRAIGHT_EXPRESS_2:
-        switch_to_screen(SCREEN_ID_E16);
-        //显示直行表情2
+        switch_to_screen(SCREEN_ID_E15);
         break;
     case STRAIGHT_EXPRESS_3:
-        switch_to_screen(SCREEN_ID_E10);
-        //显示直行表情3
+        switch_to_screen(SCREEN_ID_E8);
         break;
     case STRAIGHT_EXPRESS_4:
-        switch_to_screen(SCREEN_ID_E8);
-        //显示直行表情4
+        switch_to_screen(SCREEN_ID_E2);
         break;
     default:
-        switch_to_screen(SCREEN_ID_E14);
+        switch_to_screen(SCREEN_ID_E10);
         break;
     }
+
+    // switch_to_screen(SCREEN_ID_E5);
+    
 }

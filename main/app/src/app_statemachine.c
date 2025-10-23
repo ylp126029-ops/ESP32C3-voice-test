@@ -49,8 +49,8 @@ static void ui_dynamic_timer_callback(TimerHandle_t xTimer) {
     else if(current_screen == SCREEN_ID_E15)
     {
         lvgl_port_lock(0);
-        lv_animimg_set_src(guider_ui.E_15_animimg_1, (const void **) E_15_animimg_1_imgs, 40);
-        lv_animimg_set_duration(guider_ui.E_15_animimg_1, 60*40);
+        lv_animimg_set_src(guider_ui.E_15_animimg_1, (const void **) E_15_animimg_1_imgs, 30);
+        lv_animimg_set_duration(guider_ui.E_15_animimg_1, 60*30);
         lv_animimg_set_repeat_count(guider_ui.E_15_animimg_1, 1);
         lv_animimg_start(guider_ui.E_15_animimg_1);
         lvgl_port_unlock();
@@ -58,12 +58,40 @@ static void ui_dynamic_timer_callback(TimerHandle_t xTimer) {
     else if(current_screen == SCREEN_ID_E16)
     {
         lvgl_port_lock(0);
-        lv_animimg_set_src(guider_ui.E_16_animimg_1, (const void **) E_16_animimg_1_imgs, 40);
-        lv_animimg_set_duration(guider_ui.E_16_animimg_1, 60*40);
+        lv_animimg_set_src(guider_ui.E_16_animimg_1, (const void **) E_16_animimg_1_imgs, 30);
+        lv_animimg_set_duration(guider_ui.E_16_animimg_1, 60*30);
         lv_animimg_set_repeat_count(guider_ui.E_16_animimg_1, 1);
         lv_animimg_start(guider_ui.E_16_animimg_1);
         lvgl_port_unlock();
     }
+    else if(current_screen == SCREEN_ID_E2)
+    {
+        lvgl_port_lock(0);
+        lv_animimg_set_src(guider_ui.E_2_animimg_1, (const void **) E_2_animimg_1_imgs, 30);
+        lv_animimg_set_duration(guider_ui.E_2_animimg_1, 60*30);
+        lv_animimg_set_repeat_count(guider_ui.E_2_animimg_1, 1);
+        lv_animimg_start(guider_ui.E_2_animimg_1);
+        lvgl_port_unlock();
+    }
+    else if(current_screen == SCREEN_ID_E5)
+    {
+        lvgl_port_lock(0);
+        lv_animimg_set_src(guider_ui.E_5_animimg_1, (const void **) E_5_animimg_1_imgs, 30);
+        lv_animimg_set_duration(guider_ui.E_5_animimg_1, 60*30);
+        lv_animimg_set_repeat_count(guider_ui.E_5_animimg_1, 1);
+        lv_animimg_start(guider_ui.E_5_animimg_1);
+        lvgl_port_unlock();
+    }
+    else if(current_screen == SCREEN_ID_E7)
+    {
+        lvgl_port_lock(0);
+        lv_animimg_set_src(guider_ui.E_7_animimg_1, (const void **) E_7_animimg_1_imgs, 30);
+        lv_animimg_set_duration(guider_ui.E_7_animimg_1, 60*30);
+        lv_animimg_set_repeat_count(guider_ui.E_7_animimg_1, 1);
+        lv_animimg_start(guider_ui.E_7_animimg_1);
+        lvgl_port_unlock();
+    }
+
 }
 
 //表情切换定时器回调函数
@@ -180,8 +208,9 @@ void app_statemachine_handle_event(app_event_t event) {
             break;
         case APP_EVENT_MOTION_DECELERATE://停止
             // 进入减速状态，显示减速开始UI
-            app_ui_show_accelerate_start();
-            vTaskDelay(pdMS_TO_TICKS(1000));
+            // app_ui_show_accelerate_start();
+            // vTaskDelay(pdMS_TO_TICKS(1000));
+            app_ui_show_stop();
             break;
         default:
             // 未知状态，不执行任何操作
