@@ -273,6 +273,8 @@ void app_ui_show_right(void)
         vTaskDelay(30*1000 / portTICK_PERIOD_MS);
         break;
     }
+    //打印当前右转表情
+    ESP_LOGI(TAG, "UI Update: Right Express -> %d", express);
 }
 
 //显示停止表情，，，目前和直行用同一套表情
@@ -305,6 +307,7 @@ void app_ui_show_stop(void)
             switch_to_screen(SCREEN_ID_E13);
             break;
     }
+    ESP_LOGI(TAG, "UI Update: Stop Express -> %d", express);
     
 }
 
