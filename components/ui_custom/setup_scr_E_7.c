@@ -30,10 +30,10 @@ void setup_scr_E_7(lv_ui *ui)
 
     //Write codes E_7_animimg_1
     ui->E_7_animimg_1 = lv_animimg_create(ui->E_7);
-    lv_obj_set_pos(ui->E_7_animimg_1, 40, 40);
-    lv_obj_set_size(ui->E_7_animimg_1, 160, 160);
-    lv_animimg_set_src(ui->E_7_animimg_1, (const void **) E_7_animimg_1_imgs, 30);
-    lv_animimg_set_duration(ui->E_7_animimg_1, 30*30);
+    lv_obj_set_pos(ui->E_7_animimg_1, 20, 20);
+    lv_obj_set_size(ui->E_7_animimg_1, 200, 200);
+    lv_animimg_set_src(ui->E_7_animimg_1, (const void **) E_7_animimg_1_imgs, 20);
+    lv_animimg_set_duration(ui->E_7_animimg_1, 20*30);
     lv_animimg_set_repeat_count(ui->E_7_animimg_1, LV_ANIM_REPEAT_INFINITE);
     // lv_animimg_start(ui->E_7_animimg_1);
 

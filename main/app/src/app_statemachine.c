@@ -22,8 +22,8 @@ static void ui_dynamic_timer_callback(TimerHandle_t xTimer) {
     if(current_screen == SCREEN_ID_E2)
     {
         lvgl_port_lock(0);
-        lv_animimg_set_src(guider_ui.E_2_animimg_1, (const void **) E_2_animimg_1_imgs, 30);
-        lv_animimg_set_duration(guider_ui.E_2_animimg_1, 60*30);
+        lv_animimg_set_src(guider_ui.E_2_animimg_1, (const void **) E_2_animimg_1_imgs, 21);
+        lv_animimg_set_duration(guider_ui.E_2_animimg_1, 21*80);
         lv_animimg_set_repeat_count(guider_ui.E_2_animimg_1, 1);
         lv_animimg_start(guider_ui.E_2_animimg_1);
         lvgl_port_unlock();
@@ -31,8 +31,8 @@ static void ui_dynamic_timer_callback(TimerHandle_t xTimer) {
     else if(current_screen == SCREEN_ID_E5)
     {
         lvgl_port_lock(0);
-        lv_animimg_set_src(guider_ui.E_5_animimg_1, (const void **) E_5_animimg_1_imgs, 30);
-        lv_animimg_set_duration(guider_ui.E_5_animimg_1, 60*30);
+        lv_animimg_set_src(guider_ui.E_5_animimg_1, (const void **) E_5_animimg_1_imgs, 23);
+        lv_animimg_set_duration(guider_ui.E_5_animimg_1, 23*80);
         lv_animimg_set_repeat_count(guider_ui.E_5_animimg_1, 1);
         lv_animimg_start(guider_ui.E_5_animimg_1);
         lvgl_port_unlock();
@@ -40,8 +40,8 @@ static void ui_dynamic_timer_callback(TimerHandle_t xTimer) {
     else if(current_screen == SCREEN_ID_E7)
     {
         lvgl_port_lock(0);
-        lv_animimg_set_src(guider_ui.E_7_animimg_1, (const void **) E_7_animimg_1_imgs, 30);
-        lv_animimg_set_duration(guider_ui.E_7_animimg_1, 60*30);
+        lv_animimg_set_src(guider_ui.E_7_animimg_1, (const void **) E_7_animimg_1_imgs, 20);
+        lv_animimg_set_duration(guider_ui.E_7_animimg_1, 20*80);
         lv_animimg_set_repeat_count(guider_ui.E_7_animimg_1, 1);
         lv_animimg_start(guider_ui.E_7_animimg_1);
         lvgl_port_unlock();
@@ -49,8 +49,8 @@ static void ui_dynamic_timer_callback(TimerHandle_t xTimer) {
     else if(current_screen == SCREEN_ID_E8)
     {
         lvgl_port_lock(0);
-        lv_animimg_set_src(guider_ui.E_8_animimg_1, (const void **) E_8_animimg_1_imgs, 30);
-        lv_animimg_set_duration(guider_ui.E_8_animimg_1, 60*30);
+        lv_animimg_set_src(guider_ui.E_8_animimg_1, (const void **) E_8_animimg_1_imgs, 21);
+        lv_animimg_set_duration(guider_ui.E_8_animimg_1, 21*80);
         lv_animimg_set_repeat_count(guider_ui.E_8_animimg_1, 2);
         lv_animimg_start(guider_ui.E_8_animimg_1);
         lvgl_port_unlock();
@@ -58,8 +58,8 @@ static void ui_dynamic_timer_callback(TimerHandle_t xTimer) {
     else if(current_screen == SCREEN_ID_E10)
     {
         lvgl_port_lock(0);
-        lv_animimg_set_src(guider_ui.E_10_animimg_1, (const void **) E_10_animimg_1_imgs, 30);
-        lv_animimg_set_duration(guider_ui.E_10_animimg_1, 60*30);
+        lv_animimg_set_src(guider_ui.E_10_animimg_1, (const void **) E_10_animimg_1_imgs, 18);
+        lv_animimg_set_duration(guider_ui.E_10_animimg_1, 18*80);
         lv_animimg_set_repeat_count(guider_ui.E_10_animimg_1, 1);
         lv_animimg_start(guider_ui.E_10_animimg_1);
         lvgl_port_unlock();
@@ -67,8 +67,8 @@ static void ui_dynamic_timer_callback(TimerHandle_t xTimer) {
     else if(current_screen == SCREEN_ID_E13)
     {
         lvgl_port_lock(0);
-        lv_animimg_set_src(guider_ui.E_13_animimg_1, (const void **) E_13_animimg_1_imgs, 30);
-        lv_animimg_set_duration(guider_ui.E_13_animimg_1, 60*30);
+        lv_animimg_set_src(guider_ui.E_13_animimg_1, (const void **) E_13_animimg_1_imgs, 21);
+        lv_animimg_set_duration(guider_ui.E_13_animimg_1, 21*80);
         lv_animimg_set_repeat_count(guider_ui.E_13_animimg_1, 1);
         lv_animimg_start(guider_ui.E_13_animimg_1);
         lvgl_port_unlock();
@@ -76,8 +76,8 @@ static void ui_dynamic_timer_callback(TimerHandle_t xTimer) {
     else if(current_screen == SCREEN_ID_E14)
     {
         lvgl_port_lock(0);
-        lv_animimg_set_src(guider_ui.E_14_animimg_1, (const void **) E_14_animimg_1_imgs, 30);
-        lv_animimg_set_duration(guider_ui.E_14_animimg_1, 60*30);
+        lv_animimg_set_src(guider_ui.E_14_animimg_1, (const void **) E_14_animimg_1_imgs, 22);
+        lv_animimg_set_duration(guider_ui.E_14_animimg_1, 22*80);
         lv_animimg_set_repeat_count(guider_ui.E_14_animimg_1, 1);
         lv_animimg_start(guider_ui.E_14_animimg_1);
         lvgl_port_unlock();
@@ -85,8 +85,8 @@ static void ui_dynamic_timer_callback(TimerHandle_t xTimer) {
     else if(current_screen == SCREEN_ID_E15)
     {
         lvgl_port_lock(0);
-        lv_animimg_set_src(guider_ui.E_15_animimg_1, (const void **) E_15_animimg_1_imgs, 30);
-        lv_animimg_set_duration(guider_ui.E_15_animimg_1, 60*30);
+        lv_animimg_set_src(guider_ui.E_15_animimg_1, (const void **) E_15_animimg_1_imgs, 21);
+        lv_animimg_set_duration(guider_ui.E_15_animimg_1, 21*80);
         lv_animimg_set_repeat_count(guider_ui.E_15_animimg_1, 1);
         lv_animimg_start(guider_ui.E_15_animimg_1);
         lvgl_port_unlock();

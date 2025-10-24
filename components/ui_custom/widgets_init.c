@@ -94,8 +94,7 @@ void digital_clock_count(int * hour, int * minute, int * seconds, char * meridie
 }
 
 
-const lv_image_dsc_t * E_2_animimg_1_imgs[30] = {
-    &E_2_animimg_1smile_0,
+const lv_image_dsc_t * E_2_animimg_1_imgs[21] = {
     &E_2_animimg_1smile_01,
     &E_2_animimg_1smile_02,
     &E_2_animimg_1smile_03,
@@ -117,17 +116,8 @@ const lv_image_dsc_t * E_2_animimg_1_imgs[30] = {
     &E_2_animimg_1smile_19,
     &E_2_animimg_1smile_20,
     &E_2_animimg_1smile_21,
-    &E_2_animimg_1smile_22,
-    &E_2_animimg_1smile_23,
-    &E_2_animimg_1smile_24,
-    &E_2_animimg_1smile_25,
-    &E_2_animimg_1smile_26,
-    &E_2_animimg_1smile_27,
-    &E_2_animimg_1smile_28,
-    &E_2_animimg_1smile_29,
 };
-const lv_image_dsc_t * E_5_animimg_1_imgs[30] = {
-    &E_5_animimg_1drink_0,
+const lv_image_dsc_t * E_5_animimg_1_imgs[23] = {
     &E_5_animimg_1drink_01,
     &E_5_animimg_1drink_02,
     &E_5_animimg_1drink_03,
@@ -151,14 +141,8 @@ const lv_image_dsc_t * E_5_animimg_1_imgs[30] = {
     &E_5_animimg_1drink_21,
     &E_5_animimg_1drink_22,
     &E_5_animimg_1drink_23,
-    &E_5_animimg_1drink_24,
-    &E_5_animimg_1drink_25,
-    &E_5_animimg_1drink_26,
-    &E_5_animimg_1drink_27,
-    &E_5_animimg_1drink_28,
-    &E_5_animimg_1drink_29,
 };
-const lv_image_dsc_t * E_7_animimg_1_imgs[30] = {
+const lv_image_dsc_t * E_7_animimg_1_imgs[20] = {
     &E_7_animimg_1shy_0,
     &E_7_animimg_1shy_01,
     &E_7_animimg_1shy_02,
@@ -167,10 +151,7 @@ const lv_image_dsc_t * E_7_animimg_1_imgs[30] = {
     &E_7_animimg_1shy_05,
     &E_7_animimg_1shy_06,
     &E_7_animimg_1shy_07,
-    &E_7_animimg_1shy_08,
     &E_7_animimg_1shy_09,
-    &E_7_animimg_1shy_10,
-    &E_7_animimg_1shy_11,
     &E_7_animimg_1shy_12,
     &E_7_animimg_1shy_13,
     &E_7_animimg_1shy_14,
@@ -181,16 +162,9 @@ const lv_image_dsc_t * E_7_animimg_1_imgs[30] = {
     &E_7_animimg_1shy_19,
     &E_7_animimg_1shy_20,
     &E_7_animimg_1shy_21,
-    &E_7_animimg_1shy_22,
-    &E_7_animimg_1shy_23,
-    &E_7_animimg_1shy_24,
-    &E_7_animimg_1shy_25,
-    &E_7_animimg_1shy_26,
-    &E_7_animimg_1shy_27,
-    &E_7_animimg_1shy_28,
     &E_7_animimg_1shy_29,
 };
-const lv_image_dsc_t * E_8_animimg_1_imgs[30] = {
+const lv_image_dsc_t * E_8_animimg_1_imgs[21] = {
     &E_8_animimg_1sway_0,
     &E_8_animimg_1sway_01,
     &E_8_animimg_1sway_02,
@@ -204,9 +178,6 @@ const lv_image_dsc_t * E_8_animimg_1_imgs[30] = {
     &E_8_animimg_1sway_10,
     &E_8_animimg_1sway_11,
     &E_8_animimg_1sway_12,
-    &E_8_animimg_1sway_13,
-    &E_8_animimg_1sway_14,
-    &E_8_animimg_1sway_15,
     &E_8_animimg_1sway_16,
     &E_8_animimg_1sway_17,
     &E_8_animimg_1sway_18,
@@ -215,14 +186,8 @@ const lv_image_dsc_t * E_8_animimg_1_imgs[30] = {
     &E_8_animimg_1sway_21,
     &E_8_animimg_1sway_22,
     &E_8_animimg_1sway_23,
-    &E_8_animimg_1sway_24,
-    &E_8_animimg_1sway_25,
-    &E_8_animimg_1sway_26,
-    &E_8_animimg_1sway_27,
-    &E_8_animimg_1sway_28,
-    &E_8_animimg_1sway_29,
 };
-const lv_image_dsc_t * E_10_animimg_1_imgs[30] = {
+const lv_image_dsc_t * E_10_animimg_1_imgs[18] = {
     &E_10_animimg_1sing_0,
     &E_10_animimg_1sing_01,
     &E_10_animimg_1sing_02,
@@ -233,10 +198,6 @@ const lv_image_dsc_t * E_10_animimg_1_imgs[30] = {
     &E_10_animimg_1sing_07,
     &E_10_animimg_1sing_08,
     &E_10_animimg_1sing_09,
-    &E_10_animimg_1sing_10,
-    &E_10_animimg_1sing_11,
-    &E_10_animimg_1sing_12,
-    &E_10_animimg_1sing_13,
     &E_10_animimg_1sing_14,
     &E_10_animimg_1sing_15,
     &E_10_animimg_1sing_16,
@@ -245,16 +206,8 @@ const lv_image_dsc_t * E_10_animimg_1_imgs[30] = {
     &E_10_animimg_1sing_19,
     &E_10_animimg_1sing_20,
     &E_10_animimg_1sing_21,
-    &E_10_animimg_1sing_22,
-    &E_10_animimg_1sing_23,
-    &E_10_animimg_1sing_24,
-    &E_10_animimg_1sing_25,
-    &E_10_animimg_1sing_26,
-    &E_10_animimg_1sing_27,
-    &E_10_animimg_1sing_28,
-    &E_10_animimg_1sing_29,
 };
-const lv_image_dsc_t * E_13_animimg_1_imgs[30] = {
+const lv_image_dsc_t * E_13_animimg_1_imgs[21] = {
     &E_13_animimg_1glass_0,
     &E_13_animimg_1glass_01,
     &E_13_animimg_1glass_02,
@@ -265,8 +218,6 @@ const lv_image_dsc_t * E_13_animimg_1_imgs[30] = {
     &E_13_animimg_1glass_07,
     &E_13_animimg_1glass_08,
     &E_13_animimg_1glass_09,
-    &E_13_animimg_1glass_10,
-    &E_13_animimg_1glass_11,
     &E_13_animimg_1glass_12,
     &E_13_animimg_1glass_13,
     &E_13_animimg_1glass_14,
@@ -278,15 +229,8 @@ const lv_image_dsc_t * E_13_animimg_1_imgs[30] = {
     &E_13_animimg_1glass_20,
     &E_13_animimg_1glass_21,
     &E_13_animimg_1glass_22,
-    &E_13_animimg_1glass_23,
-    &E_13_animimg_1glass_24,
-    &E_13_animimg_1glass_25,
-    &E_13_animimg_1glass_26,
-    &E_13_animimg_1glass_27,
-    &E_13_animimg_1glass_28,
-    &E_13_animimg_1glass_29,
 };
-const lv_image_dsc_t * E_14_animimg_1_imgs[30] = {
+const lv_image_dsc_t * E_14_animimg_1_imgs[22] = {
     &E_14_animimg_1normal_0,
     &E_14_animimg_1normal_01,
     &E_14_animimg_1normal_02,
@@ -309,17 +253,8 @@ const lv_image_dsc_t * E_14_animimg_1_imgs[30] = {
     &E_14_animimg_1normal_19,
     &E_14_animimg_1normal_20,
     &E_14_animimg_1normal_21,
-    &E_14_animimg_1normal_22,
-    &E_14_animimg_1normal_23,
-    &E_14_animimg_1normal_24,
-    &E_14_animimg_1normal_25,
-    &E_14_animimg_1normal_26,
-    &E_14_animimg_1normal_27,
-    &E_14_animimg_1normal_28,
-    &E_14_animimg_1normal_29,
 };
-
-const lv_image_dsc_t * E_15_animimg_1_imgs[30] = {
+const lv_image_dsc_t * E_15_animimg_1_imgs[21] = {
     &E_15_animimg_1happy_0,
     &E_15_animimg_1happy_01,
     &E_15_animimg_1happy_02,
@@ -341,32 +276,9 @@ const lv_image_dsc_t * E_15_animimg_1_imgs[30] = {
     &E_15_animimg_1happy_18,
     &E_15_animimg_1happy_19,
     &E_15_animimg_1happy_20,
-    &E_15_animimg_1happy_21,
-    &E_15_animimg_1happy_22,
-    &E_15_animimg_1happy_23,
-    &E_15_animimg_1happy_24,
-    &E_15_animimg_1happy_25,
-    &E_15_animimg_1happy_26,
-    &E_15_animimg_1happy_27,
-    &E_15_animimg_1happy_28,
-    &E_15_animimg_1happy_29,
 };
-const lv_image_dsc_t * E_16_animimg_1_imgs[30] = {
+const lv_image_dsc_t * E_16_animimg_1_imgs[16] = {
     &E_16_animimg_1left_0,
-    &E_16_animimg_1left_01,
-    &E_16_animimg_1left_02,
-    &E_16_animimg_1left_03,
-    &E_16_animimg_1left_04,
-    &E_16_animimg_1left_05,
-    &E_16_animimg_1left_06,
-    &E_16_animimg_1left_07,
-    &E_16_animimg_1left_08,
-    &E_16_animimg_1left_09,
-    &E_16_animimg_1left_10,
-    &E_16_animimg_1left_11,
-    &E_16_animimg_1left_12,
-    &E_16_animimg_1left_13,
-    &E_16_animimg_1left_14,
     &E_16_animimg_1left_15,
     &E_16_animimg_1left_16,
     &E_16_animimg_1left_17,
@@ -383,22 +295,8 @@ const lv_image_dsc_t * E_16_animimg_1_imgs[30] = {
     &E_16_animimg_1left_28,
     &E_16_animimg_1left_29,
 };
-
-const lv_image_dsc_t * E_17_animimg_1_imgs[30] = {
+const lv_image_dsc_t * E_17_animimg_1_imgs[16] = {
     &E_17_animimg_1right_0,
-    &E_17_animimg_1right_01,
-    &E_17_animimg_1right_02,
-    &E_17_animimg_1right_03,
-    &E_17_animimg_1right_04,
-    &E_17_animimg_1right_05,
-    &E_17_animimg_1right_06,
-    &E_17_animimg_1right_08,
-    &E_17_animimg_1right_09,
-    &E_17_animimg_1right_10,
-    &E_17_animimg_1right_11,
-    &E_17_animimg_1right_12,
-    &E_17_animimg_1right_13,
-    &E_17_animimg_1right_14,
     &E_17_animimg_1right_15,
     &E_17_animimg_1right_16,
     &E_17_animimg_1right_17,

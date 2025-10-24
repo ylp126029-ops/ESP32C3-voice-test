@@ -30,10 +30,10 @@ void setup_scr_E_16(lv_ui *ui)
 
     //Write codes E_16_animimg_1
     ui->E_16_animimg_1 = lv_animimg_create(ui->E_16);
-    lv_obj_set_pos(ui->E_16_animimg_1, 40, 40);
-    lv_obj_set_size(ui->E_16_animimg_1, 160, 160);
-    lv_animimg_set_src(ui->E_16_animimg_1, (const void **) E_16_animimg_1_imgs, 30);
-    lv_animimg_set_duration(ui->E_16_animimg_1, 30*30);
+    lv_obj_set_pos(ui->E_16_animimg_1, 20, 20);
+    lv_obj_set_size(ui->E_16_animimg_1, 200, 200);
+    lv_animimg_set_src(ui->E_16_animimg_1, (const void **) E_16_animimg_1_imgs, 16);
+    lv_animimg_set_duration(ui->E_16_animimg_1, 16*80);
     lv_animimg_set_repeat_count(ui->E_16_animimg_1, LV_ANIM_REPEAT_INFINITE);
     lv_animimg_start(ui->E_16_animimg_1);
     // lv_image_set_src(ui->E_16_animimg_1, E_16_animimg_1_imgs[0]);

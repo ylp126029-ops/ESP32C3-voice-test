@@ -24,16 +24,16 @@ void digital_clock_count(int * hour, int * minute, int * seconds, char * meridie
 #endif
 
 
-extern const lv_image_dsc_t * E_2_animimg_1_imgs[30];
-extern const lv_image_dsc_t * E_5_animimg_1_imgs[30];
-extern const lv_image_dsc_t * E_7_animimg_1_imgs[30];
-extern const lv_image_dsc_t * E_8_animimg_1_imgs[30];
-extern const lv_image_dsc_t * E_10_animimg_1_imgs[30];
-extern const lv_image_dsc_t * E_13_animimg_1_imgs[30];
-extern const lv_image_dsc_t * E_14_animimg_1_imgs[30];
-extern const lv_image_dsc_t * E_15_animimg_1_imgs[30];
-extern const lv_image_dsc_t * E_16_animimg_1_imgs[30];
-extern const lv_image_dsc_t * E_17_animimg_1_imgs[30];
+extern const lv_image_dsc_t * E_2_animimg_1_imgs[21];
+extern const lv_image_dsc_t * E_5_animimg_1_imgs[23];
+extern const lv_image_dsc_t * E_7_animimg_1_imgs[20];
+extern const lv_image_dsc_t * E_8_animimg_1_imgs[21];
+extern const lv_image_dsc_t * E_10_animimg_1_imgs[18];
+extern const lv_image_dsc_t * E_13_animimg_1_imgs[21];
+extern const lv_image_dsc_t * E_14_animimg_1_imgs[22];
+extern const lv_image_dsc_t * E_15_animimg_1_imgs[21];
+extern const lv_image_dsc_t * E_16_animimg_1_imgs[16];
+extern const lv_image_dsc_t * E_17_animimg_1_imgs[16];
 
 
 #ifdef __cplusplus
