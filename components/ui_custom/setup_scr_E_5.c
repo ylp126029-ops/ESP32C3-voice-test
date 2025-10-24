@@ -30,8 +30,8 @@ void setup_scr_E_5(lv_ui *ui)
 
     //Write codes E_5_animimg_1
     ui->E_5_animimg_1 = lv_animimg_create(ui->E_5);
-    lv_obj_set_pos(ui->E_5_animimg_1, 45, 45);
-    lv_obj_set_size(ui->E_5_animimg_1, 150, 150);
+    lv_obj_set_pos(ui->E_5_animimg_1, 40, 40);
+    lv_obj_set_size(ui->E_5_animimg_1, 160, 160);
     lv_animimg_set_src(ui->E_5_animimg_1, (const void **) E_5_animimg_1_imgs, 30);
     lv_animimg_set_duration(ui->E_5_animimg_1, 30*30);
     lv_animimg_set_repeat_count(ui->E_5_animimg_1, LV_ANIM_REPEAT_INFINITE);
