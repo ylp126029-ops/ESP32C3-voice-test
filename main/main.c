@@ -14,6 +14,17 @@
 
 lv_ui guider_ui;
 
+
+void Gif_test(void)
+{
+    lv_obj_t *scr = lv_scr_act();
+    lv_obj_set_style_bg_color(scr, lv_color_black(), 0);//设置背景颜色为黑色
+    lv_obj_t *gif = lv_gif_create(scr);
+    lv_gif_set_src(gif, &gif1);
+    lv_obj_center(gif);
+}
+
+
 void app_main(void)
 {
     /* BSP层初始化 */
@@ -24,10 +35,10 @@ void app_main(void)
     // ESP_ERROR_CHECK(audio_player_task_create(4096, 5)); // 创建音频播放任务
 
     /* App层初始化 */
-    app_logic_init(); // 初始化应用核心逻辑，它将负责UI的初始化
+    // app_logic_init(); // 初始化应用核心逻辑，它将负责UI的初始化
     // setup_ui(&guider_ui); 
 
-    
+    Gif_test();
     // bsp_lvgl_test_widgets();
     // bsp_lcd_test();
     // lv_obj_t *scr = lv_scr_act();

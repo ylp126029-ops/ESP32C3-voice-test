@@ -286,7 +286,7 @@ LV_IMAGE_DECLARE(E_17_animimg_1right_27);
 LV_IMAGE_DECLARE(E_17_animimg_1right_28);
 LV_IMAGE_DECLARE(E_17_animimg_1right_29);
 
-
+LV_IMAGE_DECLARE(gif1);
 
 
 #ifdef __cplusplus

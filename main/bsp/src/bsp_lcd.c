@@ -30,20 +30,20 @@
 // #define EXAMPLE_LCD_GPIO_CS         (GPIO_NUM_7)
 // #define EXAMPLE_LCD_GPIO_BL         (GPIO_NUM_0)
 
-#define EXAMPLE_LCD_GPIO_SCLK       (GPIO_NUM_11)
-#define EXAMPLE_LCD_GPIO_MOSI       (GPIO_NUM_13)
-#define EXAMPLE_LCD_GPIO_RST        (GPIO_NUM_9)
-#define EXAMPLE_LCD_GPIO_DC         (GPIO_NUM_12)
-#define EXAMPLE_LCD_GPIO_CS         (GPIO_NUM_10)
-#define EXAMPLE_LCD_GPIO_BL         (GPIO_NUM_14)
-
-
-// #define EXAMPLE_LCD_GPIO_SCLK       (GPIO_NUM_41)
-// #define EXAMPLE_LCD_GPIO_MOSI       (GPIO_NUM_42)
-// #define EXAMPLE_LCD_GPIO_RST        (GPIO_NUM_38)
-// #define EXAMPLE_LCD_GPIO_DC         (GPIO_NUM_40)
-// #define EXAMPLE_LCD_GPIO_CS         (GPIO_NUM_39)
+// #define EXAMPLE_LCD_GPIO_SCLK       (GPIO_NUM_11)
+// #define EXAMPLE_LCD_GPIO_MOSI       (GPIO_NUM_13)
+// #define EXAMPLE_LCD_GPIO_RST        (GPIO_NUM_9)
+// #define EXAMPLE_LCD_GPIO_DC         (GPIO_NUM_12)
+// #define EXAMPLE_LCD_GPIO_CS         (GPIO_NUM_10)
 // #define EXAMPLE_LCD_GPIO_BL         (GPIO_NUM_14)
+
+
+#define EXAMPLE_LCD_GPIO_SCLK       (GPIO_NUM_41)
+#define EXAMPLE_LCD_GPIO_MOSI       (GPIO_NUM_42)
+#define EXAMPLE_LCD_GPIO_RST        (GPIO_NUM_38)
+#define EXAMPLE_LCD_GPIO_DC         (GPIO_NUM_40)
+#define EXAMPLE_LCD_GPIO_CS         (GPIO_NUM_39)
+#define EXAMPLE_LCD_GPIO_BL         (GPIO_NUM_14)
 
 // #define EXAMPLE_LCD_GPIO_SCLK       (GPIO_NUM_12)
 // #define EXAMPLE_LCD_GPIO_MOSI       (GPIO_NUM_13)
