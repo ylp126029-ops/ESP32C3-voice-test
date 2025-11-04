@@ -116,11 +116,10 @@ static void ui_Change_timer_callback(TimerHandle_t xTimer) {
     //         break;
     //     default:
     // }
-    if(current_event == APP_EVENT_MOTION_DECELERATE)
-    {
-        random_express_stop();
+    if(current_event == APP_EVENT_MOTION_DECELERATE){
+        random_express_stop();//随机切换停止表情
     }else if(current_event == APP_EVENT_MOTION_ACCELERATE){
-       random_express_straight();
+       random_express_straight();//随机切换直行表情
     }
     
     
