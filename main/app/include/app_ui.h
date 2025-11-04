@@ -77,4 +77,79 @@ void app_ui_show_stop(void);//显示停止表情
 int random_express(void);//随机返回1-4，第一次的时候将1-4随机排好序，每调用4次后又重新排序
 int random_express_left(void);//随机返回1-3，第一次的时候将1-3随机排好序，每调用3次后又重新排序
 int random_express_right(void);//随机返回1-3，第一次的时候将1-3随机排好序，每调用3次后又重新排序
+
+/********************************************
+ * ******************************************
+以下代码是基于播放Gif图素材实现的UI显示功能的函数
+********************************************
+*******************************************/
+
+//定义一个枚举类型，用于表示直行状态的Gif图的数量编号
+typedef enum {
+    Gif_Straight_NULL = 0,
+    Gif_Straight_1 = 1,
+    Gif_Straight_2 = 2,
+    Gif_Straight_3 = 3,
+    Gif_Straight_4 = 4,
+    Gif_Straight_5 = 5,
+    Gif_Straight_6 = 6,
+    Gif_Straight_7 = 7,
+    Gif_Straight_8 = 8,
+    Gif_Straight_9 = 9,
+    Gif_Straight_Num_MAX = Gif_Straight_9,
+} Gif_Straight_Num_t;
+//定义一个枚举类型，用于表示停止状态的Gif图的数量编号
+typedef enum {
+    Gif_Stop_NULL = 0,
+    Gif_Stop_1 = 1,
+    Gif_Stop_2 = 2,
+    Gif_Stop_3 = 3,
+    Gif_Stop_4 = 4,
+    Gif_Stop_5 = 5,
+    Gif_Stop_6 = 6,
+    Gif_Stop_7 = 7,
+    Gif_Stop_8 = 8,
+    Gif_Stop_9 = 9,
+    Gif_Stop_Num_MAX = Gif_Stop_9,
+} Gif_Stop_Num_t;
+//定义一个枚举类型，用于表示左转状态的Gif图的数量编号
+typedef enum {
+    Gif_Left_NULL = 0,
+    Gif_Left_1 = 1,
+    Gif_Left_2 = 2,
+    Gif_Left_3 = 3,
+    Gif_Left_4 = 4,
+    Gif_Left_5 = 5,
+    Gif_Left_6 = 6,
+    Gif_Left_7 = 7,
+    Gif_Left_8 = 8,
+    Gif_Left_9 = 9,
+    Gif_Left_Num_MAX = Gif_Left_9,
+} Gif_Left_Num_t;
+//定义一个枚举类型，用于表示右转状态的Gif图的数量编号
+typedef enum {
+    Gif_Right_NULL = 0,
+    Gif_Right_1 = 1,
+    Gif_Right_2 = 2,
+    Gif_Right_3 = 3,
+    Gif_Right_4 = 4,
+    Gif_Right_5 = 5,
+    Gif_Right_6 = 6,
+    Gif_Right_7 = 7,
+    Gif_Right_8 = 8,
+    Gif_Right_9 = 9,
+    Gif_Right_Num_MAX = Gif_Right_9,
+} Gif_Right_Num_t;
+void Gif_Ui_Init(void);//初始化Gif图UI
+void Gif_Shou_straight(void);//显示当前直行状态的Gif图
+Gif_Straight_Num_t random_express_straight(void);//随机返回一个直行Gif图编号,并更新当前要显示的直行状态的Gif图编号
+void Gif_Shou_Right(void);//显示当前右转状态的Gif图
+Gif_Right_Num_t random_right_Pass(void);//随机返回一个右转Gif图编号,并更新当前要显示的右转状态的Gif图编号
+void Gif_Shou_Left(void);//显示当前左转状态的Gif图
+Gif_Left_Num_t random_left_Pass(void);//随机返回一个左转Gif图编号,并更新当前要显示的左转状态的Gif图编号
+void Gif_Shou_Stop(void);//显示当前停止状态的Gif图
+Gif_Stop_Num_t random_express_stop(void);//随机返回一个停止Gif图编号,并更新当前要显示的停止Gif图编号
+
+
+
 #endif /* APP_UI_H_ */

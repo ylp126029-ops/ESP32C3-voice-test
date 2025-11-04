@@ -92,13 +92,13 @@ static void switch_to_screen(screen_id_t screen_id)
 esp_err_t app_ui_init(void)
 {
     ESP_LOGI(TAG, "UI Application Init");
-
-    setup_ui(&guider_ui);
-    events_init(&guider_ui);
+    Gif_Ui_Init();//初始化gif UI
+    // setup_ui(&guider_ui);//Gui guider实现的程序
+    // events_init(&guider_ui);//Gui guider实现的程序
     srand(xTaskGetTickCount());  // 基于系统滴答计数初始化随机种子
     // g_current_screen = SCREEN_ID_E14; // Change default to E14
 
-    ESP_LOGI(TAG, "UI Init Finished, default screen is E14.");
+    // ESP_LOGI(TAG, "UI Init Finished, default screen is E14.");
     ESP_LOGI(TAG, "Initial memory: %d bytes", (size_t)esp_get_free_heap_size());
 
     return ESP_OK;
@@ -359,4 +359,197 @@ int random_express_right(void)
         }
     }
     return express[index++ % 3];    
+}
+
+
+
+/***************************************
+****************************************
+以下代码是基于播放Gif图素材实现的UI显示功能
+***************************************
+***************************************/
+
+static lv_obj_t *Gif = NULL; // 只创建一次
+void Gif_Ui_Init(void)
+{
+    lv_obj_t *scr = lv_scr_act();
+    lv_obj_set_style_bg_color(scr, lv_color_black(), 0);//设置背景颜色为黑色
+
+    // 如果 gif 对象还没创建，先创建gif对象
+    if (Gif == NULL) {
+        Gif = lv_gif_create(scr);
+        lv_obj_center(Gif);
+    }
+
+}
+
+
+static Gif_Straight_Num_t Current_Gif_Straight_Num = Gif_Straight_1;//当前要显示的直行Gif图编号
+static Gif_Straight_Num_t Last_Gif_Straight_Num = Gif_Straight_NULL;//上一次显示的直行Gif图编号
+void Gif_Shou_straight(void)
+{
+    if (Current_Gif_Straight_Num == Last_Gif_Straight_Num) {
+        return;//如果当前要显示的直行Gif图编号和上一次显示的直行Gif图编号相同，则直接返回
+    }
+    lvgl_port_lock(0);
+    // 直行gif 资源数组
+    const lv_img_dsc_t *gif_array[] = { &gif1, &gif2 , &gif3, &gif4, &gif5, &gif6, &gif7, &gif8, &gif9};
+
+    if (Current_Gif_Straight_Num >= 1 && Current_Gif_Straight_Num <= Gif_Straight_Num_MAX) {
+        lv_gif_set_src(Gif, gif_array[Current_Gif_Straight_Num - 1]);
+    } else {
+        // 超出范围，设置为默认的gif1
+        lv_gif_set_src(Gif, &gif1);
+    }
+    lvgl_port_unlock();
+    Last_Gif_Straight_Num = Current_Gif_Straight_Num;//更新上一次显示的直行Gif图编号
+}
+
+//编写一个直行随机函数，要求随机返回Gif_Straight_Num_t里的枚举，第一次的时候将全部随机排好序，每调用Gif_Straight_Num_MAX次后又重新排序,并更新当前要显示的直行Gif图编号
+Gif_Straight_Num_t random_express_straight(void)
+{
+    static Gif_Straight_Num_t express[Gif_Straight_Num_MAX] = {Gif_Straight_1, Gif_Straight_2, Gif_Straight_3, Gif_Straight_4, Gif_Straight_5, Gif_Straight_6, Gif_Straight_7, Gif_Straight_8, Gif_Straight_9};
+    static int index = 0;
+    if (index % Gif_Straight_Num_MAX == 0) {
+        // 每Gif_Straight_Num_MAX次调用，随机排序
+        for (int i = 0; i < Gif_Straight_Num_MAX; i++) {
+            int j = rand() % Gif_Straight_Num_MAX;
+            Gif_Straight_Num_t temp = express[i];
+            express[i] = express[j];
+            express[j] = temp;
+        }
+    }
+    Current_Gif_Straight_Num = express[index++ % Gif_Straight_Num_MAX];//更新当前要显示的直行Gif图编号
+    return express[index++ % Gif_Straight_Num_MAX];
+}
+
+void Gif_Shou_Right(void)
+{
+    lvgl_port_lock(0);
+    //显示右转专属GIF图
+    lv_gif_set_src(Gif, &gif2);
+    lvgl_port_unlock();
+
+    //延时3S
+    vTaskDelay(3*1000 / portTICK_PERIOD_MS);
+
+    lvgl_port_lock(0);
+    //显示右转完成GIF图
+    random_right_Pass();//随机返回一个右转Gif图编号,并更新当前要显示的右转Gif图编号
+    lvgl_port_unlock();   
+
+    //保持30S，防止其他状态打断
+    vTaskDelay(30*1000 / portTICK_PERIOD_MS);
+}
+
+//设置当前要显示的右转完成Gif图，随机返回Gif_Right_Num_t里的枚举，第一次的时候将全部随机排好序，每调用Gif_Right_Num_MAX次后又重新排序,并更新显示当前要显示的右转完成Gif图
+Gif_Right_Num_t random_right_Pass(void)
+{
+    static Gif_Right_Num_t express[Gif_Right_Num_MAX] = {Gif_Right_1, Gif_Right_2, Gif_Right_3, Gif_Right_4, Gif_Right_5, Gif_Right_6, Gif_Right_7, Gif_Right_8, Gif_Right_9};
+    static int index = 0;
+    if (index % Gif_Right_Num_MAX == 0) {
+        // 每Gif_Right_Num_MAX次调用，随机排序
+        for (int i = 0; i < Gif_Right_Num_MAX; i++) {
+            int j = rand() % Gif_Right_Num_MAX;
+            Gif_Right_Num_t temp = express[i];
+            express[i] = express[j];
+            express[j] = temp;
+        }
+    }
+    Gif_Right_Num_t Current_Gif_Right_Num = express[index++ % Gif_Right_Num_MAX];//更新当前要显示的右转Gif图编号
+
+    lvgl_port_lock(0);
+    // 右转完成gif 资源数组
+    const lv_img_dsc_t *gif_array[] = { &gif1, &gif2 ,&gif3, &gif4, &gif5, &gif6, &gif7, &gif8, &gif9};
+
+    if (Current_Gif_Right_Num >= 1 && Current_Gif_Right_Num <= Gif_Right_Num_MAX) {
+        lv_gif_set_src(Gif, gif_array[Current_Gif_Right_Num - 1]);
+    } else {
+        // 超出范围，设置为默认的gif1
+        lv_gif_set_src(Gif, &gif1);
+    }
+    lvgl_port_unlock();
+    return express[index++ % Gif_Right_Num_MAX];
+}
+
+void Gif_Shou_Left(void)
+{ 
+    lvgl_port_lock(0);
+    lv_gif_set_src(Gif, &gif2);//显示左转专属GIF图
+    lvgl_port_unlock();
+    vTaskDelay(3*1000 / portTICK_PERIOD_MS);//延时3S
+    lvgl_port_lock(0);
+    random_left_Pass();//随机返回一个左转Gif图编号,并更新当前要显示的左转Gif图编号,//显示左转完成GIF图
+    lvgl_port_unlock();   
+    //保持30S，防止其他状态打断
+    vTaskDelay(30*1000 / portTICK_PERIOD_MS);    
+}
+//设置当前要显示的左转完成Gif图，随机返回Gif_Left_Num_t里的枚举，第一次的时候将全部随机排好序，每调用Gif_Left_Num_MAX次后又重新排序,并更新显示当前要显示的左转完成Gif图
+Gif_Left_Num_t random_left_Pass(void)
+{
+    static Gif_Left_Num_t express[Gif_Left_Num_MAX] = {Gif_Left_1, Gif_Left_2, Gif_Left_3, Gif_Left_4, Gif_Left_5, Gif_Left_6, Gif_Left_7, Gif_Left_8, Gif_Left_9};
+    static int index = 0;
+    if (index % Gif_Left_Num_MAX == 0) {
+        // 每Gif_Left_Num_MAX次调用，随机排序
+        for (int i = 0; i < Gif_Left_Num_MAX; i++) {
+            int j = rand() % Gif_Left_Num_MAX;
+            Gif_Left_Num_t temp = express[i];
+            express[i] = express[j];
+            express[j] = temp;
+        }
+    }
+    Gif_Left_Num_t Current_Gif_Left_Num = express[index++ % Gif_Left_Num_MAX];//更新当前要显示的左转Gif图编号
+
+    lvgl_port_lock(0);
+    // 左转完成gif 资源数组
+    const lv_img_dsc_t *gif_array[] = { &gif1, &gif2 ,&gif3, &gif4, &gif5, &gif6, &gif7, &gif8, &gif9};
+
+    if (Current_Gif_Left_Num >= 1 && Current_Gif_Left_Num <= Gif_Left_Num_MAX) {
+        lv_gif_set_src(Gif, gif_array[Current_Gif_Left_Num - 1]);
+    } else {
+        // 超出范围，设置为默认的gif1
+        lv_gif_set_src(Gif, &gif1);
+    }
+    lvgl_port_unlock();
+    return express[index++ % Gif_Left_Num_MAX];
+}
+
+
+static Gif_Stop_Num_t Current_Gif_Stop_Num = Gif_Stop_1;//当前要显示的停止Gif图编号
+static Gif_Stop_Num_t Last_Gif_Stop_Num = Gif_Stop_NULL;//上一次显示的停止Gif图编号
+void Gif_Shou_Stop(void)
+{
+    if (Current_Gif_Stop_Num == Last_Gif_Stop_Num) {
+        return;//如果当前要显示的停止Gif图编号和上一次显示的停止Gif图编号相同，则直接返回
+    }
+
+    lvgl_port_lock(0);
+    // 停止gif 资源数组
+    const lv_img_dsc_t *gif_array[] = { &gif1, &gif2 ,&gif3, &gif4, &gif5, &gif6, &gif7, &gif8, &gif9};
+    if (Current_Gif_Stop_Num >= 1 && Current_Gif_Stop_Num <= Gif_Stop_Num_MAX) {
+        lv_gif_set_src(Gif, gif_array[Current_Gif_Stop_Num - 1]);
+    } else {
+        // 超出范围，设置为空
+        lv_gif_set_src(Gif, &gif1);
+    }
+    lvgl_port_unlock();
+    Last_Gif_Stop_Num = Current_Gif_Stop_Num;//更新上一次显示的停止Gif图编号
+}
+
+//编写一个停止随机函数，要求随机返回Gif_Stop_Num_t里的枚举，第一次的时候将全部随机排好序，每调用Gif_Stop_Num_MAX次后又重新排序,并更新当前要显示的停止Gif图编号
+Gif_Stop_Num_t random_express_stop(void)
+{
+    static Gif_Stop_Num_t express[Gif_Stop_Num_MAX] = {Gif_Stop_1, Gif_Stop_2, Gif_Stop_3, Gif_Stop_4, Gif_Stop_5, Gif_Stop_6, Gif_Stop_7, Gif_Stop_8, Gif_Stop_9};
+    static int index = 0;
+    if (index % Gif_Stop_Num_MAX == 0) {
+        // 每Gif_Stop_Num_MAX次调用，随机排序
+        for (int i = 0; i < Gif_Stop_Num_MAX; i++) {
+            int j = rand() % Gif_Stop_Num_MAX;
+            Gif_Stop_Num_t temp = express[i];
+            express[i] = express[j];
+            express[j] = temp;
+        }
+    }
+    Current_Gif_Stop_Num=express[index % Gif_Stop_Num_MAX];//更新当前要显示的停止Gif图编号
+    return express[index++ % Gif_Stop_Num_MAX];
 }

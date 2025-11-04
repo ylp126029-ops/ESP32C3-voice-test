@@ -22,6 +22,22 @@ void Gif_test(void)
     lv_obj_t *gif = lv_gif_create(scr);
     lv_gif_set_src(gif, &gif1);
     lv_obj_center(gif);
+
+    //延时15s后切换到下一个Gif图
+    vTaskDelay(pdMS_TO_TICKS(15000));
+    lvgl_port_lock(0);
+    lv_gif_set_src(gif, &gif2);
+    lvgl_port_unlock();
+
+    vTaskDelay(pdMS_TO_TICKS(5000));
+    lvgl_port_lock(0);
+    lv_gif_set_src(gif, &gif1);
+    lvgl_port_unlock();  
+
+    // 检查可用内存
+    size_t free_heap = esp_get_free_heap_size();
+    ESP_LOGI("free_heap", "Free heap before Gif: %zu bytes", free_heap);
+    
 }
 
 
@@ -35,10 +51,10 @@ void app_main(void)
     // ESP_ERROR_CHECK(audio_player_task_create(4096, 5)); // 创建音频播放任务
 
     /* App层初始化 */
-    // app_logic_init(); // 初始化应用核心逻辑，它将负责UI的初始化
+    app_logic_init(); // 初始化应用核心逻辑，它将负责UI的初始化
     // setup_ui(&guider_ui); 
 
-    Gif_test();
+    // Gif_test();
     // bsp_lvgl_test_widgets();
     // bsp_lcd_test();
     // lv_obj_t *scr = lv_scr_act();

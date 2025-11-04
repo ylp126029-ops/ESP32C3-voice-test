@@ -21,8 +21,8 @@ typedef enum {
     APP_EVENT_MOTION_TURN_LEFT_HARD,   // 动作：大力左转 (新)
     APP_EVENT_MOTION_TURN_RIGHT_NORMAL,// 动作：普通右转
     APP_EVENT_MOTION_TURN_RIGHT_HARD,  // 动作：大力右转 (新)
-    APP_EVENT_MOTION_ACCELERATE,     // 动作：加速
-    APP_EVENT_MOTION_DECELERATE,     // 动作：减速
+    APP_EVENT_MOTION_ACCELERATE,     // 动作：直行
+    APP_EVENT_MOTION_DECELERATE,     // 动作：停止
     APP_EVENT_MOTION_ENDED,          // 动作：结束
     APP_EVENT_TIMER_UNIFORM_UI,      // 定时器：匀速UI切换
     APP_EVENT_NUM_EVENTS             // 事件总数
