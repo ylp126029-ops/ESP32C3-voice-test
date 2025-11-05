@@ -3,7 +3,8 @@
 
 #include "esp_err.h"
 
-typedef enum {
+typedef enum
+{
     UI_STATE_INIT,
     UI_STATE_DRIVING,
     UI_STATE_TURN_LEFT,
@@ -46,7 +47,8 @@ void app_ui_show_accelerate_end(void);
 void app_ui_show_decelerate_start(void);
 void app_ui_show_decelerate_end(void);
 // Enum to track the current screen
-typedef enum {
+typedef enum
+{
     SCREEN_ID_NONE,
     SCREEN_ID_E2,
     SCREEN_ID_E5,
@@ -59,8 +61,9 @@ typedef enum {
     SCREEN_ID_E16,
     SCREEN_ID_E17,
 } screen_id_t;
-//定义直行表情枚举
-typedef enum {
+// 定义直行表情枚举
+typedef enum
+{
     STRAIGHT_EXPRESS_0, // 直行表情0
     STRAIGHT_EXPRESS_1, // 直行表情1
     STRAIGHT_EXPRESS_2, // 直行表情2
@@ -69,14 +72,14 @@ typedef enum {
 } straight_express_t;
 screen_id_t app_ui_get_current_screen(void);
 void app_ui_test(void);
-void app_ui_show_straight(void);//显示当前直行表情
-void app_ui_set_straight_express(straight_express_t express);//设置当前直行表情
-void app_ui_show_left(void);//显示左转表情
-void app_ui_show_right(void);//显示右转表情
-void app_ui_show_stop(void);//显示停止表情
-int random_express(void);//随机返回1-4，第一次的时候将1-4随机排好序，每调用4次后又重新排序
-int random_express_left(void);//随机返回1-3，第一次的时候将1-3随机排好序，每调用3次后又重新排序
-int random_express_right(void);//随机返回1-3，第一次的时候将1-3随机排好序，每调用3次后又重新排序
+void app_ui_show_straight(void);                              // 显示当前直行表情
+void app_ui_set_straight_express(straight_express_t express); // 设置当前直行表情
+void app_ui_show_left(void);                                  // 显示左转表情
+void app_ui_show_right(void);                                 // 显示右转表情
+void app_ui_show_stop(void);                                  // 显示停止表情
+int random_express(void);                                     // 随机返回1-4，第一次的时候将1-4随机排好序，每调用4次后又重新排序
+int random_express_left(void);                                // 随机返回1-3，第一次的时候将1-3随机排好序，每调用3次后又重新排序
+int random_express_right(void);                               // 随机返回1-3，第一次的时候将1-3随机排好序，每调用3次后又重新排序
 
 /********************************************
  * ******************************************
@@ -84,9 +87,10 @@ int random_express_right(void);//随机返回1-3，第一次的时候将1-3随�
 ********************************************
 *******************************************/
 
-//定义一个枚举类型，用于表示直行状态的Gif图的数量编号
-typedef enum {
-    Gif_Straight_NULL = 0,
+// 定义一个枚举类型，用于表示直行状态的Gif图的数量编号
+typedef enum
+{
+    Gif_Straight_0 = 0, // 默认
     Gif_Straight_1 = 1,
     Gif_Straight_2 = 2,
     Gif_Straight_3 = 3,
@@ -97,10 +101,12 @@ typedef enum {
     Gif_Straight_8 = 8,
     Gif_Straight_9 = 9,
     Gif_Straight_Num_MAX = Gif_Straight_9,
+    Gif_Straight_Default,
 } Gif_Straight_Num_t;
-//定义一个枚举类型，用于表示停止状态的Gif图的数量编号
-typedef enum {
-    Gif_Stop_NULL = 0,
+// 定义一个枚举类型，用于表示停止状态的Gif图的数量编号
+typedef enum
+{
+    Gif_Stop_0 = 0, // 默认
     Gif_Stop_1 = 1,
     Gif_Stop_2 = 2,
     Gif_Stop_3 = 3,
@@ -111,9 +117,11 @@ typedef enum {
     Gif_Stop_8 = 8,
     Gif_Stop_9 = 9,
     Gif_Stop_Num_MAX = Gif_Stop_9,
+    Gif_Stop_Default,
 } Gif_Stop_Num_t;
-//定义一个枚举类型，用于表示左转状态的Gif图的数量编号
-typedef enum {
+// 定义一个枚举类型，用于表示左转状态的Gif图的数量编号
+typedef enum
+{
     Gif_Left_NULL = 0,
     Gif_Left_1 = 1,
     Gif_Left_2 = 2,
@@ -125,9 +133,11 @@ typedef enum {
     Gif_Left_8 = 8,
     Gif_Left_9 = 9,
     Gif_Left_Num_MAX = Gif_Left_9,
+    Gif_Left_Default,
 } Gif_Left_Num_t;
-//定义一个枚举类型，用于表示右转状态的Gif图的数量编号
-typedef enum {
+// 定义一个枚举类型，用于表示右转状态的Gif图的数量编号
+typedef enum
+{
     Gif_Right_NULL = 0,
     Gif_Right_1 = 1,
     Gif_Right_2 = 2,
@@ -139,17 +149,18 @@ typedef enum {
     Gif_Right_8 = 8,
     Gif_Right_9 = 9,
     Gif_Right_Num_MAX = Gif_Right_9,
+    Gif_Right_Default,
 } Gif_Right_Num_t;
-void Gif_Ui_Init(void);//初始化Gif图UI
-void Gif_Shou_straight(void);//显示当前直行状态的Gif图
-Gif_Straight_Num_t random_express_straight(void);//随机返回一个直行Gif图编号,并更新当前要显示的直行状态的Gif图编号
-void Gif_Shou_Right(void);//显示当前右转状态的Gif图
-Gif_Right_Num_t random_right_Pass(void);//随机返回一个右转Gif图编号,并更新当前要显示的右转状态的Gif图编号
-void Gif_Shou_Left(void);//显示当前左转状态的Gif图
-Gif_Left_Num_t random_left_Pass(void);//随机返回一个左转Gif图编号,并更新当前要显示的左转状态的Gif图编号
-void Gif_Shou_Stop(void);//显示当前停止状态的Gif图
-Gif_Stop_Num_t random_express_stop(void);//随机返回一个停止Gif图编号,并更新当前要显示的停止Gif图编号
-
-
+void Gif_Ui_Init(void);                           // 初始化Gif图UI
+void Gif_Shou_straight(void);                     // 显示当前直行状态的Gif图
+Gif_Straight_Num_t random_express_straight(void); // 随机返回一个直行Gif图编号,并更新当前要显示的直行状态的Gif图编号
+void Gif_Shou_Right(void);                        // 显示当前右转状态的Gif图
+Gif_Right_Num_t random_right_Pass(void);          // 随机返回一个右转Gif图编号,并更新当前要显示的右转状态的Gif图编号
+void Gif_Shou_Left(void);                         // 显示当前左转状态的Gif图
+Gif_Left_Num_t random_left_Pass(void);            // 随机返回一个左转Gif图编号,并更新当前要显示的左转状态的Gif图编号
+void Gif_Shou_Stop(void);                         // 显示当前停止状态的Gif图
+Gif_Stop_Num_t random_express_stop(void);         // 随机返回一个停止Gif图编号,并更新当前要显示的停止Gif图编号
+void Set_Straight_default(void);
+void Set_Stop_default(void);
 
 #endif /* APP_UI_H_ */

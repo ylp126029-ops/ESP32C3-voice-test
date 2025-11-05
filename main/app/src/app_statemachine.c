@@ -120,20 +120,23 @@ static void ui_Change_timer_callback(TimerHandle_t xTimer)
     random_express_straight(); // 随机切换直行表情
 
     // 停止当前动态表情切换定时器
-    //  xTimerStop(ui_Change_timer, portMAX_DELAY);
-    //  //启动切回默认表情定时器回调函数
-    //  xTimerStart(ui_back_timer, portMAX_DELAY);
+    xTimerStop(ui_Change_timer, portMAX_DELAY);
+    // 启动切回默认表情定时器回调函数
+    xTimerStart(ui_back_timer, portMAX_DELAY);
 }
 
-// //切回默认表情定时器回调函数
-// static void ui_back_timer_callback(TimerHandle_t xTimer) {
-//     //停止当前表情切换定时器
-//     xTimerStop(ui_back_timer, portMAX_DELAY);
-//     //切换回默认表情
-//     app_ui_set_straight_express(STRAIGHT_EXPRESS_0);
-//     //启动动态表情切换定时器
-//     xTimerStart(ui_Change_timer, portMAX_DELAY);
-// }
+// 切回默认表情定时器回调函数
+static void ui_back_timer_callback(TimerHandle_t xTimer)
+{
+    // 停止当前表情切换定时器
+    xTimerStop(ui_back_timer, portMAX_DELAY);
+    // 切换回默认表情
+    //  app_ui_set_straight_express(STRAIGHT_EXPRESS_0);
+    Set_Straight_default();
+    Set_Stop_default();
+    // 启动动态表情切换定时器
+    xTimerStart(ui_Change_timer, portMAX_DELAY);
+}
 void app_time_init(void)
 {
     // // 创建8S周期的软件定时器，用于切换启动表情动态
@@ -147,24 +150,24 @@ void app_time_init(void)
     // //启动定时器
     // xTimerStart(ui_dynamic_timer, portMAX_DELAY);
 
-    // 创建1分钟周期的软件定时器，用于切换直行不同表情
+    // 创建1分钟周期的软件定时器，用于切换不同表情
     ui_Change_timer = xTimerCreate(
         "ui_Change_timer",        // 定时器名称
-        pdMS_TO_TICKS(30 * 1000), // 定时周期 (1分钟)
+        pdMS_TO_TICKS(60 * 1000), // 定时周期 (1分钟)
         pdTRUE,                   // 自动重载
         (void *)0,                // 定时器ID
         ui_Change_timer_callback  // 回调函数
     );
     // 启动定时器
     xTimerStart(ui_Change_timer, portMAX_DELAY);
-    // //创建45S周期的软件定时器，用于切换回直行默认表情
-    // ui_back_timer = xTimerCreate(
-    //     "ui_back_timer",         // 定时器名称
-    //     pdMS_TO_TICKS(45 * 1000),   // 定时周期 (45S)
-    //     pdTRUE,                     // 自动重载
-    //     (void *)0,                  // 定时器ID
-    //     ui_back_timer_callback // 回调函数
-    // );
+    // 创建30S周期的软件定时器，用于切换回默认表情
+    ui_back_timer = xTimerCreate(
+        "ui_back_timer",          // 定时器名称
+        pdMS_TO_TICKS(30 * 1000), // 定时周期 (30S)
+        pdTRUE,                   // 自动重载
+        (void *)0,                // 定时器ID
+        ui_back_timer_callback    // 回调函数
+    );
 }
 
 void app_statemachine_handle_event(app_event_t event)

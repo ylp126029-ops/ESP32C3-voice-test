@@ -439,11 +439,23 @@ int random_express_right(void)
 ***************************************
 ***************************************/
 
-static lv_obj_t *Gif = NULL;                                         // 只创建一次
-static Gif_Straight_Num_t Current_Gif_Straight_Num = Gif_Straight_1; // 当前要显示的直行Gif图编号
-static Gif_Straight_Num_t Last_Gif_Straight_Num = Gif_Straight_NULL; // 上一次显示的直行Gif图编号
-static Gif_Stop_Num_t Current_Gif_Stop_Num = Gif_Stop_1;             // 当前要显示的停止Gif图编号
-static Gif_Stop_Num_t Last_Gif_Stop_Num = Gif_Stop_NULL;             // 上一次显示的停止Gif图编号
+static lv_obj_t *Gif = NULL;                                            // 只创建一次
+static Gif_Straight_Num_t Current_Gif_Straight_Num = Gif_Straight_0;    // 当前要显示的直行Gif图编号
+static Gif_Straight_Num_t Last_Gif_Straight_Num = Gif_Straight_Default; // 上一次显示的直行Gif图编号
+static Gif_Stop_Num_t Current_Gif_Stop_Num = Gif_Stop_0;                // 当前要显示的停止Gif图编号
+static Gif_Stop_Num_t Last_Gif_Stop_Num = Gif_Stop_Default;             // 上一次显示的停止Gif图编号
+
+// 设置为直行默认表情
+void Set_Straight_default(void)
+{
+    Current_Gif_Straight_Num = Gif_Straight_0;
+}
+
+// 设置为停止默认表情
+void Set_Stop_default(void)
+{
+    Current_Gif_Stop_Num = Gif_Stop_0;
+}
 void Gif_Ui_Init(void)
 {
     lv_obj_t *scr = lv_scr_act();
@@ -473,12 +485,12 @@ void Gif_Shou_straight(void)
     }
     else
     {
-        // 超出范围，设置为默认的straight1
+        // 设置为默认的straight1
         lv_gif_set_src(Gif, &straight1);
     }
     lvgl_port_unlock();
     Last_Gif_Straight_Num = Current_Gif_Straight_Num; // 更新上一次显示的直行Gif图编号
-    Last_Gif_Stop_Num = Gif_Stop_NULL;                // 播放完后设置停止表情的上一次为NULL，实现直行切换到停止表情时，停止表情能及时更新
+    Last_Gif_Stop_Num = Gif_Stop_Default;             // 播放完后设置停止表情的上一次为NULL，实现直行切换到停止表情时，停止表情能及时更新
 }
 
 // 编写一个直行随机函数，要求随机返回Gif_Straight_Num_t里的枚举，第一次的时候将全部随机排好序，每调用Gif_Straight_Num_MAX次后又重新排序,并更新当前要显示的直行Gif图编号
@@ -526,12 +538,12 @@ void Gif_Shou_Stop(void)
     }
     else
     {
-        // 超出范围，设置为空
+        // 设置为默认
         lv_gif_set_src(Gif, &gif1);
     }
     lvgl_port_unlock();
-    Last_Gif_Stop_Num = Current_Gif_Stop_Num;  // 更新上一次显示的停止Gif图编号
-    Last_Gif_Straight_Num = Gif_Straight_NULL; // 播放完后设置直行表情的上一次为NULL，实现停止切换到直行表情时，直行表情能及时更新
+    Last_Gif_Stop_Num = Current_Gif_Stop_Num;     // 更新上一次显示的停止Gif图编号
+    Last_Gif_Straight_Num = Gif_Straight_Default; // 播放完后设置直行表情的上一次为Default，实现停止切换到直行表情时，直行表情能及时更新
 }
 
 // 编写一个停止随机函数，要求随机返回Gif_Stop_Num_t里的枚举，第一次的时候将全部随机排好序，每调用Gif_Stop_Num_MAX次后又重新排序,并更新当前要显示的停止Gif图编号
@@ -566,12 +578,10 @@ Gif_Stop_Num_t random_express_stop(void)
 void Gif_Shou_Right(void)
 {
     lvgl_port_lock(0);
-    // 显示右转专属GIF图
-    lv_gif_set_src(Gif, &straight4);
+    lv_gif_set_src(Gif, &straight4); // 显示右转专属GIF图
     lvgl_port_unlock();
 
-    // 延时3S
-    vTaskDelay(3 * 1000 / portTICK_PERIOD_MS);
+    vTaskDelay(4 * 1000 / portTICK_PERIOD_MS); // 延时3S
 
     lvgl_port_lock(0);
     // 显示右转完成GIF图
@@ -579,9 +589,9 @@ void Gif_Shou_Right(void)
     lvgl_port_unlock();
 
     // 保持30S，防止其他状态打断
-    vTaskDelay(8 * 1000 / portTICK_PERIOD_MS);
-    Last_Gif_Straight_Num = Gif_Straight_NULL; // 播放完后设置好切回直行的默认Gif图
-    Last_Gif_Stop_Num = Gif_Stop_NULL;         // 播放完后设置好切回停止的默认Gif图
+    vTaskDelay(20 * 1000 / portTICK_PERIOD_MS);
+    Last_Gif_Straight_Num = Gif_Straight_Default; // 播放完后设置直行表情的上一次为Default，保证直行表情能及时更新
+    Last_Gif_Stop_Num = Gif_Stop_Default;         // 播放完后设置停止表情的上一次为Default，保证直行表情能及时更新
 }
 
 // 设置当前要显示的右转完成Gif图，随机返回Gif_Right_Num_t里的枚举，第一次的时候将全部随机排好序，每调用Gif_Right_Num_MAX次后又重新排序,并更新显示当前要显示的右转完成Gif图
@@ -634,14 +644,14 @@ void Gif_Shou_Left(void)
     lvgl_port_lock(0);
     lv_gif_set_src(Gif, &straight4); // 显示左转专属GIF图
     lvgl_port_unlock();
-    vTaskDelay(3 * 1000 / portTICK_PERIOD_MS); // 延时3S
+    vTaskDelay(4 * 1000 / portTICK_PERIOD_MS); // 延时3S
     lvgl_port_lock(0);
     random_left_Pass(); // 随机返回一个左转Gif图编号,并更新当前要显示的左转Gif图编号,//显示左转完成GIF图
     lvgl_port_unlock();
     // 保持30S，防止其他状态打断
-    vTaskDelay(8 * 1000 / portTICK_PERIOD_MS);
-    Last_Gif_Straight_Num = Gif_Straight_NULL; // 播放完后设置好切回直行的默认Gif图
-    Last_Gif_Stop_Num = Gif_Stop_NULL;         // 播放完后设置好切回停止的默认Gif图
+    vTaskDelay(20 * 1000 / portTICK_PERIOD_MS);
+    Last_Gif_Straight_Num = Gif_Straight_Default; // 播放完后设置直行表情的上一次为Default，保证直行表情能及时更新
+    Last_Gif_Stop_Num = Gif_Stop_Default;         // 播放完后设置停止表情的上一次为Default，保证直行表情能及时更新
 }
 
 /*设置当前要显示的左转完成Gif图，随机返回Gif_Left_Num_t里的枚举，
