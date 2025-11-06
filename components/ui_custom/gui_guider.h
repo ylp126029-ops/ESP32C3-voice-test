@@ -286,17 +286,8 @@ extern "C"
 	LV_IMAGE_DECLARE(E_17_animimg_1right_29);
 
 	// Gif图资源
-	LV_IMAGE_DECLARE(gif1);
-	LV_IMAGE_DECLARE(gif2);
-	LV_IMAGE_DECLARE(gif3);
-	LV_IMAGE_DECLARE(gif4);
-	LV_IMAGE_DECLARE(gif5);
-	LV_IMAGE_DECLARE(gif6);
-	LV_IMAGE_DECLARE(gif7);
-	LV_IMAGE_DECLARE(gif8);
-	LV_IMAGE_DECLARE(gif9);
 
-		LV_IMAGE_DECLARE(straight1);
+	LV_IMAGE_DECLARE(straight1);
 	LV_IMAGE_DECLARE(straight2);
 	LV_IMAGE_DECLARE(straight3);
 	LV_IMAGE_DECLARE(straight4);

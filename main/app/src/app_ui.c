@@ -449,12 +449,14 @@ static Gif_Stop_Num_t Last_Gif_Stop_Num = Gif_Stop_Default;             // 上�
 void Set_Straight_default(void)
 {
     Current_Gif_Straight_Num = Gif_Straight_0;
+    Last_Gif_Straight_Num = Gif_Straight_Default;
 }
 
 // 设置为停止默认表情
 void Set_Stop_default(void)
 {
     Current_Gif_Stop_Num = Gif_Stop_0;
+    Last_Gif_Stop_Num = Gif_Stop_Default;
 }
 void Gif_Ui_Init(void)
 {
@@ -490,7 +492,7 @@ void Gif_Shou_straight(void)
     }
     lvgl_port_unlock();
     Last_Gif_Straight_Num = Current_Gif_Straight_Num; // 更新上一次显示的直行Gif图编号
-    Last_Gif_Stop_Num = Gif_Stop_Default;             // 播放完后设置停止表情的上一次为NULL，实现直行切换到停止表情时，停止表情能及时更新
+    Set_Stop_default();                               // 播放完后设置停止表情的上一次为NULL，实现直行切换到停止表情时，停止表情能及时更新
 }
 
 // 编写一个直行随机函数，要求随机返回Gif_Straight_Num_t里的枚举，第一次的时候将全部随机排好序，每调用Gif_Straight_Num_MAX次后又重新排序,并更新当前要显示的直行Gif图编号
@@ -531,7 +533,7 @@ void Gif_Shou_Stop(void)
 
     lvgl_port_lock(0);
     // 停止gif 资源数组
-    const lv_img_dsc_t *gif_array[] = {&gif1, &gif2, &gif3, &gif4, &gif5, &gif6, &gif7, &gif8, &gif9};
+    const lv_img_dsc_t *gif_array[] = {&straight1, &straight2, &straight3, &straight4, &straight5, &straight6, &straight7, &straight8, &straight9};
     if (Current_Gif_Stop_Num >= 1 && Current_Gif_Stop_Num <= Gif_Stop_Num_MAX)
     {
         lv_gif_set_src(Gif, gif_array[Current_Gif_Stop_Num - 1]);
@@ -539,11 +541,11 @@ void Gif_Shou_Stop(void)
     else
     {
         // 设置为默认
-        lv_gif_set_src(Gif, &gif1);
+        lv_gif_set_src(Gif, &straight2);
     }
     lvgl_port_unlock();
-    Last_Gif_Stop_Num = Current_Gif_Stop_Num;     // 更新上一次显示的停止Gif图编号
-    Last_Gif_Straight_Num = Gif_Straight_Default; // 播放完后设置直行表情的上一次为Default，实现停止切换到直行表情时，直行表情能及时更新
+    Last_Gif_Stop_Num = Current_Gif_Stop_Num; // 更新上一次显示的停止Gif图编号
+    Set_Straight_default();                   // 播放完后设置直行表情的上一次为Default，实现停止切换到直行表情时，直行表情能及时更新
 }
 
 // 编写一个停止随机函数，要求随机返回Gif_Stop_Num_t里的枚举，第一次的时候将全部随机排好序，每调用Gif_Stop_Num_MAX次后又重新排序,并更新当前要显示的停止Gif图编号
@@ -578,10 +580,10 @@ Gif_Stop_Num_t random_express_stop(void)
 void Gif_Shou_Right(void)
 {
     lvgl_port_lock(0);
-    lv_gif_set_src(Gif, &straight4); // 显示右转专属GIF图
+    lv_gif_set_src(Gif, &straight9); // 显示右转专属GIF图
     lvgl_port_unlock();
 
-    vTaskDelay(4 * 1000 / portTICK_PERIOD_MS); // 延时3S
+    vTaskDelay(6 * 1000 / portTICK_PERIOD_MS); // 延时3S
 
     lvgl_port_lock(0);
     // 显示右转完成GIF图
@@ -590,8 +592,8 @@ void Gif_Shou_Right(void)
 
     // 保持30S，防止其他状态打断
     vTaskDelay(20 * 1000 / portTICK_PERIOD_MS);
-    Last_Gif_Straight_Num = Gif_Straight_Default; // 播放完后设置直行表情的上一次为Default，保证直行表情能及时更新
-    Last_Gif_Stop_Num = Gif_Stop_Default;         // 播放完后设置停止表情的上一次为Default，保证直行表情能及时更新
+    Set_Straight_default(); // 播放完后设置直行表情的上一次为Default，保证直行表情能及时更新
+    Set_Stop_default();     // 播放完后设置停止表情的上一次为Default，保证直行表情能及时更新
 }
 
 // 设置当前要显示的右转完成Gif图，随机返回Gif_Right_Num_t里的枚举，第一次的时候将全部随机排好序，每调用Gif_Right_Num_MAX次后又重新排序,并更新显示当前要显示的右转完成Gif图
@@ -623,7 +625,7 @@ Gif_Right_Num_t random_right_Pass(void)
 
     lvgl_port_lock(0);
     // 右转完成gif 资源数组
-    const lv_img_dsc_t *gif_array[] = {&gif1, &gif2, &gif3, &gif4, &gif5, &gif6, &gif7, &gif8, &gif9};
+    const lv_img_dsc_t *gif_array[] = {&straight1, &straight2, &straight3, &straight4, &straight5, &straight6, &straight7, &straight8, &straight9};
 
     if (Current_Gif_Right_Num >= 1 && Current_Gif_Right_Num <= Gif_Right_Num_MAX)
     {
@@ -632,7 +634,7 @@ Gif_Right_Num_t random_right_Pass(void)
     else
     {
         // 超出范围，设置为默认的gif1
-        lv_gif_set_src(Gif, &gif1);
+        lv_gif_set_src(Gif, &straight2);
     }
     lvgl_port_unlock();
     return express[index++];
@@ -644,14 +646,14 @@ void Gif_Shou_Left(void)
     lvgl_port_lock(0);
     lv_gif_set_src(Gif, &straight4); // 显示左转专属GIF图
     lvgl_port_unlock();
-    vTaskDelay(4 * 1000 / portTICK_PERIOD_MS); // 延时3S
+    vTaskDelay(6 * 1000 / portTICK_PERIOD_MS); // 延时3S
     lvgl_port_lock(0);
     random_left_Pass(); // 随机返回一个左转Gif图编号,并更新当前要显示的左转Gif图编号,//显示左转完成GIF图
     lvgl_port_unlock();
     // 保持30S，防止其他状态打断
     vTaskDelay(20 * 1000 / portTICK_PERIOD_MS);
-    Last_Gif_Straight_Num = Gif_Straight_Default; // 播放完后设置直行表情的上一次为Default，保证直行表情能及时更新
-    Last_Gif_Stop_Num = Gif_Stop_Default;         // 播放完后设置停止表情的上一次为Default，保证直行表情能及时更新
+    Set_Straight_default(); // 播放完后设置直行表情的上一次为Default，保证直行表情能及时更新
+    Set_Stop_default();     // 播放完后设置停止表情的上一次为Default，保证直行表情能及时更新
 }
 
 /*设置当前要显示的左转完成Gif图，随机返回Gif_Left_Num_t里的枚举，
@@ -685,7 +687,7 @@ Gif_Left_Num_t random_left_Pass(void)
 
     lvgl_port_lock(0);
     // 左转完成gif 资源数组,每个元素对应一个左转完成gif图,根据实际素材在这添加
-    const lv_img_dsc_t *gif_array[] = {&gif1, &gif2, &gif3, &gif4, &gif5, &gif6, &gif7, &gif8, &gif9};
+    const lv_img_dsc_t *gif_array[] = {&straight1, &straight2, &straight3, &straight4, &straight5, &straight6, &straight7, &straight8, &straight9};
 
     if (Current_Gif_Left_Num >= 1 && Current_Gif_Left_Num <= Gif_Left_Num_MAX)
     {
@@ -693,7 +695,7 @@ Gif_Left_Num_t random_left_Pass(void)
     }
     else
     {
-        lv_gif_set_src(Gif, &gif1); // 超出范围，设置为默认的gif1
+        lv_gif_set_src(Gif, &straight2); // 超出范围，设置为默认的straight2
     }
     lvgl_port_unlock();
     return express[index++];

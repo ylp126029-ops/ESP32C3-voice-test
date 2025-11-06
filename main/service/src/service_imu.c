@@ -13,11 +13,24 @@ static const char *TAG = "service_imu"; // 日志标签
 #define ALPHA           0.99f        // 互补滤波器系数，陀螺仪权重
 #define RAD_TO_DEG      57.27272727f // 弧度转角度系数
 #define TASK_DELAY_MS   500           // IMU数据读取任务的周期（毫秒）
+#define FILTER_ALPHA 0.3f // 滤波系数，可根据实际调整
 
 // 静态全局变量
 static imu_data_callback_t s_data_cb = NULL; // 指向IMU数据回调函数的指针
 static imu_data_t s_imu_data = {0};          // 存储IMU数据（姿态角和加速度）
-
+/**
+ * @brief 一阶低通滤波器，对输入加速度进行平滑处理
+ * @param acce_y 当前帧加速度（float，单位 m/s²）
+ * @return float 滤波后的加速度
+ * @note alpha 越大响应越快，越小滤波越强；建议 0.2~0.5
+ */
+float filter_acce_y(float acce_y)
+{
+    static float last_acce_y = 0.0f;
+    float filtered = FILTER_ALPHA * acce_y + (1.0f - FILTER_ALPHA) * last_acce_y;
+    last_acce_y = filtered;
+    return filtered;
+}
 /**
  * @brief 互补滤波器
  * @details 融合加速度计和陀螺仪数据，计算出更稳定的姿态角
@@ -92,7 +105,7 @@ static void service_imu_task(void *pvParameters)
             // 填充需要上报的X轴加速度数据
             s_imu_data.acce_x = acce.acce_x;
             // 填充需要上报的Y轴加速度数据
-            s_imu_data.acce_y = acce.acce_y;
+            s_imu_data.acce_y = filter_acce_y(acce.acce_y);
 
             // 新增：填充需要上报的陀螺仪数据
             s_imu_data.gyro = gyro;

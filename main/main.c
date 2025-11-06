@@ -20,18 +20,18 @@ void Gif_test(void)
     lv_obj_t *scr = lv_scr_act();
     lv_obj_set_style_bg_color(scr, lv_color_black(), 0);//设置背景颜色为黑色
     lv_obj_t *gif = lv_gif_create(scr);
-    lv_gif_set_src(gif, &gif1);
+    lv_gif_set_src(gif, &straight1);
     lv_obj_center(gif);
 
     //延时15s后切换到下一个Gif图
     vTaskDelay(pdMS_TO_TICKS(15000));
     lvgl_port_lock(0);
-    lv_gif_set_src(gif, &gif2);
+    lv_gif_set_src(gif, &straight2);
     lvgl_port_unlock();
 
     vTaskDelay(pdMS_TO_TICKS(5000));
     lvgl_port_lock(0);
-    lv_gif_set_src(gif, &gif1);
+    lv_gif_set_src(gif, &straight1);
     lvgl_port_unlock();  
 
     // 检查可用内存
